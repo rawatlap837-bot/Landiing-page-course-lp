@@ -2,33 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Star, BadgeCheck, Sparkles, Quote } from "lucide-react";
 import MentorPhoto from "../assets/mentor image.png";
 
-const floatingStats = [
-    {
-        value: "4+",
-        label: "Years Experience",
-        position: "top-3 right-2 sm:top-6 sm:right-3 sm:-right-6",
-    },
-    {
-        value: "300+",
-        label: "Students Mentored",
-        position: "top-1/2 -translate-y-1/2 left-1 sm:-left-10",
-    },
-    {
-        value: "₹50L+",
-        label: "Client Revenue Generated",
-        position: "bottom-3 right-2 sm:bottom-6 sm:right-0",
-    },
-];
-
-const credentials = [
-    "4+ years of hands-on experience in digital marketing",
-    "Worked directly with businesses and clients across niches",
-    "Built the exact curriculum used in this program",
-    "Founder, agency owner & practicing entrepreneur",
-];
-
-const logos = ["Amazon", "Shopify", "Razorpay", "Zoho", "Freshworks"];
-
 // Scroll-triggered entrance: fires once when the element enters the viewport.
 function useInView(options) {
     const ref = useRef(null);
@@ -103,32 +76,6 @@ export default function AboutMentor() {
                         <span className="absolute -bottom-4 -left-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#1C1533] text-white shadow-lg sm:-left-5">
                             <Quote className="h-5 w-5" strokeWidth={1.75} />
                         </span>
-
-                        {floatingStats.map((stat, i) => (
-                            <div
-                                key={stat.label}
-                                style={{
-                                    transitionDelay: photoInView ? `${300 + i * 150}ms` : "0ms",
-                                }}
-                                className={`absolute ${stat.position
-                                    } flex items-center gap-1.5 rounded-xl bg-white/95 px-2 py-1.5 shadow-[0_8px_24px_rgba(109,40,217,0.2)] ring-1 ring-[#EFEAFB] backdrop-blur-sm transition-all duration-500 ease-out sm:gap-2 sm:rounded-2xl sm:px-4 sm:py-3 ${photoInView
-                                        ? "scale-100 opacity-100"
-                                        : "scale-75 opacity-0"
-                                    }`}
-                            >
-                                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#7C3AED] to-[#4C1D95] text-xs font-bold text-white sm:h-9 sm:w-9 sm:rounded-xl">
-                                    <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
-                                </span>
-                                <div className="leading-tight">
-                                    <p className="whitespace-nowrap text-[10px] font-extrabold text-[#1C1533] sm:text-sm">
-                                        {stat.value}
-                                    </p>
-                                    <p className="hidden whitespace-nowrap text-[10px] text-[#8A8496] sm:block">
-                                        {stat.label}
-                                    </p>
-                                </div>
-                            </div>
-                        ))}
                     </div>
 
                     {/* copy */}
@@ -164,28 +111,6 @@ export default function AboutMentor() {
                             professional service.
                         </p>
 
-                        <ul className="mt-7 space-y-3">
-                            {credentials.map((item, i) => (
-                                <li
-                                    key={item}
-                                    style={{
-                                        transitionDelay: copyInView ? `${200 + i * 100}ms` : "0ms",
-                                    }}
-                                    className={`flex items-start gap-3 transition-all duration-500 ease-out ${copyInView
-                                        ? "translate-y-0 opacity-100"
-                                        : "translate-y-3 opacity-0"
-                                        }`}
-                                >
-                                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#6D28D9]">
-                                        <BadgeCheck className="h-3.5 w-3.5 text-white" />
-                                    </span>
-                                    <span className="text-sm leading-snug text-[#1C1533]">
-                                        {item}
-                                    </span>
-                                </li>
-                            ))}
-                        </ul>
-
                         <div className="mt-8 flex items-center gap-1">
                             {Array.from({ length: 5 }).map((_, i) => (
                                 <Star
@@ -196,22 +121,6 @@ export default function AboutMentor() {
                             <span className="ml-2 text-sm font-semibold text-[#1C1533]">
                                 Rated 4.9/5 by past students
                             </span>
-                        </div>
-
-                        <div className="mt-8 border-t border-[#EFEAFB] pt-6">
-                            <p className="text-xs font-semibold uppercase tracking-wide text-[#8A8496]">
-                                Experience across
-                            </p>
-                            <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2">
-                                {logos.map((logo) => (
-                                    <span
-                                        key={logo}
-                                        className="text-sm font-bold text-[#B7AECB] transition-colors duration-300 hover:text-[#6D28D9]"
-                                    >
-                                        {logo}
-                                    </span>
-                                ))}
-                            </div>
                         </div>
                     </div>
                 </div>

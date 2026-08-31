@@ -490,7 +490,7 @@ export default function WhatYoullLearn() {
             fullWidth
             className="uppercase tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
           >
-            Join The Program Now
+            Book Your Slot Now
           </Button>
         </div>
       </div>

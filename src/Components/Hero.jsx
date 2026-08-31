@@ -85,7 +85,7 @@ export default function HeroSection() {
         )}`}
         style={delay(0)}
       >
-        <a href="#" className="flex min-w-0 items-center gap-2 text-sm font-bold text-slate-900 sm:text-lg">
+        <a href="https://rzp.io/rzp/AD2PP0lT" className="flex min-w-0 items-center gap-2 text-sm font-bold text-slate-900 sm:text-lg">
           <img
             src={CALogo}
             alt="Creative Adhyayan"
@@ -116,7 +116,7 @@ export default function HeroSection() {
 
         {/* headline */}
         <h1
-          className={`mt-4 text-[2.3rem] font-bold leading-tight tracking-tight text-slate-900 xs:text-3xl sm:mt-5 sm:text-5xl md:text-6xl lg:text-7xl ${step(
+          className={`mt-4 text-[2.35rem] font-bold leading-tight tracking-tight text-slate-900 xs:text-3xl sm:mt-5 sm:text-5xl md:text-6xl lg:text-7xl ${step(
             2
           )}`}
           style={delay(160)}
@@ -183,7 +183,7 @@ export default function HeroSection() {
             fullWidth
             className="uppercase tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
           >
-            Join The Program Now
+            Book Your Slot Now
           </Button>
 
           <Button

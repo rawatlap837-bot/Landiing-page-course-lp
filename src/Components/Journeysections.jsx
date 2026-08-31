@@ -303,7 +303,7 @@ export default function JourneySections() {
                             fullWidth
                             className="uppercase tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
                         >
-                            Start Your Journey Today
+                            Book Your Slot Now
                         </Button>
                     </Reveal>
                 </div>

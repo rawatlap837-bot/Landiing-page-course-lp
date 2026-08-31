@@ -139,7 +139,7 @@ export default function WhyLandingPages() {
             fullWidth
             className="uppercase mt-5 tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
           >
-            Join The Program Now
+            Book Your Slot Now
           </Button>
         </div>
 
