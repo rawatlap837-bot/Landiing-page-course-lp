@@ -138,6 +138,25 @@ export default function HeroSection() {
           A practical, step-by-step programme to help you master landing page creation, build your portfolio, and start monetizing your skill.
         </p>
 
+        <p
+          className={`mx-auto mt-3 text-center text-lg font-semibold sm:text-base ${step(
+            4
+          )}`}
+          style={delay(320)}
+        >
+          <span className="text-slate-800">
+           ( Normally </span>
+          <span className="text-slate-400 line-through decoration-2">
+             ₹60,000
+          </span>{" "}
+          <span className="text-slate-800">
+            Today Just{" "}
+            <span className="text-lg font-extrabold text-violet-600 sm:text-xl">
+              ₹1,199)
+            </span>
+          </span>
+        </p>
+
         {/* image centerpiece */}
         <div
           className={`relative mx-auto mt-6 max-w-3xl sm:mt-8 ${step(4)}`}
@@ -160,7 +179,7 @@ export default function HeroSection() {
                 <Play className="h-2.5 w-2.5 fill-current sm:h-3.5 sm:w-3.5" />
               </span>
               <span className="truncate text-[10px] font-semibold text-slate-800 sm:text-xs">
-                See how a landing page comes together
+                One skill can change the way you earn
               </span>
             </div>
           </div>

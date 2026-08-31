@@ -355,7 +355,7 @@ function FeatureCard({ title, detail, Illustration, index }) {
         <Illustration className="h-16 w-16" />
       </div>
       <div>
-        <h3 className="whitespace-pre-line text-base font-bold leading-snug text-[#1C1533]">
+        <h3 className="whitespace-pre-line text-[18px] font-bold leading-snug text-[#1C1533]">
           {title}
         </h3>
         <p className="mt-2 text-sm leading-snug text-[#6B6578]">{detail}</p>
@@ -383,7 +383,7 @@ function WeekCard({ label, title, bullets, Illustration, index }) {
           <Illustration className="h-14 w-14" />
         </div>
 
-        <h3 className="mt-4 text-left text-base font-bold text-[#1C1533]">
+        <h3 className="mt-4 text-left text-[20px] font-bold text-[#1C1533]">
           {title}
         </h3>
 

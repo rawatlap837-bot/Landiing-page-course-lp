@@ -128,7 +128,7 @@ function PerkItem({ perk, index }) {
             <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#6D28D9] transition-transform duration-300 group-hover:scale-110">
                 <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />
             </span>
-            <span className="text-sm font-medium text-[#1C1533]">{perk}</span>
+            <span className="text-[14px] font-medium text-[#1C1533]">{perk}</span>
         </div>
     );
 }
@@ -147,7 +147,7 @@ function PersonaCard({ title, detail, icon: Icon, index }) {
                 <Icon className="h-7 w-7" strokeWidth={1.75} />
             </div>
             <div>
-                <h3 className="text-base font-bold leading-snug text-[#1C1533]">
+                <h3 className="text-[18px] font-bold leading-snug text-[#1C1533]">
                     {title}
                 </h3>
                 <p className="mt-2 text-sm leading-snug text-[#6B6578]">{detail}</p>
@@ -197,7 +197,7 @@ export default function WhatYouGetAndWhoFor() {
                             fullWidth
                             className="uppercase tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
                         >
-                           Book Your Slot Now
+                            Book Your Slot Now
                         </Button>
                     </div>
                 </div>

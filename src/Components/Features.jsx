@@ -94,7 +94,7 @@ function StepCard({ number, label, detail, icon: Icon, index }) {
       </div>
 
       <div className="min-w-0 sm:mt-4">
-        <h3 className="text-sm font-bold text-white sm:text-base">{label}</h3>
+        <h3 className="text-[20px] font-bold text-white sm:text-base">{label}</h3>
         <p className="mt-0.5 text-xs leading-snug text-[#C9BEE8] sm:mt-2 sm:max-w-[10rem] sm:text-sm">
           {detail}
         </p>
@@ -196,7 +196,7 @@ export default function EarningRoadmap() {
         className={`relative mx-auto max-w-3xl px-6 text-center transition-all duration-700 ease-out ${headingInView ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
           }`}
       >
-        <h2 className="text-2xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl">
+        <h2 className="text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl">
           How You Can Start Earning in{" "}
           <span className="relative text-[#C4B5FD]">
             30 Days

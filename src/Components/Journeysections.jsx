@@ -191,13 +191,13 @@ export default function JourneySections() {
                                             }`}
                                     >
                                         <p
-                                            className={`text-xs font-bold uppercase tracking-wide ${step.final ? "text-violet-200" : "text-[#6D28D9]"
+                                            className={`text-[17px] font-bold uppercase tracking-wide ${step.final ? "text-violet-200" : "text-[#6D28D9]"
                                                 }`}
                                         >
                                             {step.day}
                                         </p>
                                         <p
-                                            className={`mt-1 text-sm font-semibold leading-snug sm:text-base ${step.final ? "text-white" : "text-[#1C1533]"
+                                            className={`mt-1 text-[15px] font-semibold leading-snug sm:text-base ${step.final ? "text-white" : "text-[#1C1533]"
                                                 }`}
                                         >
                                             {step.detail}
@@ -277,7 +277,7 @@ export default function JourneySections() {
                         {useCases.map((item, i) => (
                             <Reveal key={item} delay={i * 70}>
                                 <div className="flex h-full items-center justify-center rounded-xl bg-[#F9F7FE] px-3 py-4 text-center ring-1 ring-[#EFEAFB] transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-md hover:ring-[#D9CCF7] sm:px-4">
-                                    <span className="text-xs font-semibold text-[#1C1533] sm:text-sm">
+                                    <span className="text-[15px] font-semibold text-[#1C1533] sm:text-sm">
                                         {item}
                                     </span>
                                 </div>
