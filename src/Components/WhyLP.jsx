@@ -131,14 +131,15 @@ export default function WhyLandingPages() {
           {/* CTA button */}
           <Button
             href="https://rzp.io/rzp/AD2PP0lT"
-            variant="gradient"
             size="lg"
             icon={ArrowRight}
+            iconPosition="right"
             pulse
+            shine
             fullWidth
-            className="mt-8 uppercase tracking-wide sm:mt-10 sm:w-auto"
+            className="uppercase mt-5 tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
           >
-            Book Your Slot
+            Join The Program Now
           </Button>
         </div>
 

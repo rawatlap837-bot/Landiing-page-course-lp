@@ -103,6 +103,40 @@ function StepCard({ number, label, detail, icon: Icon, index }) {
   );
 }
 
+// Connector arrow between two steps. Animates with a soft forward "nudge"
+// loop — three staggered copies fading/sliding in the direction of travel,
+// like a gentle flow indicator — instead of a single static icon.
+// `direction` is "right" (desktop, horizontal) or "down" (mobile, vertical).
+function FlowArrow({ direction = "right" }) {
+  const Icon = direction === "down" ? ArrowDown : ArrowRight;
+  const wrapperClass =
+    direction === "down"
+      ? "flex items-center justify-center py-0.5 sm:hidden"
+      : "hidden shrink-0 items-center sm:flex";
+
+  return (
+    <div className={wrapperClass}>
+      <div
+        className={`arrow-flow-${direction} relative ${direction === "down" ? "h-5 w-4" : "mx-1 h-5 w-5"
+          }`}
+      >
+        <Icon
+          className={`arrow-flow-copy absolute inset-0 h-full w-full text-[#8B6FE0]`}
+          style={{ animationDelay: "0s" }}
+        />
+        <Icon
+          className={`arrow-flow-copy absolute inset-0 h-full w-full text-[#8B6FE0]`}
+          style={{ animationDelay: "0.4s" }}
+        />
+        <Icon
+          className={`arrow-flow-copy absolute inset-0 h-full w-full text-[#8B6FE0]`}
+          style={{ animationDelay: "0.8s" }}
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function EarningRoadmap() {
   const [headingRef, headingInView] = useInView({ threshold: 0.3 });
 
@@ -110,6 +144,52 @@ export default function EarningRoadmap() {
     <section className="relative overflow-hidden bg-[#160B33] py-14 sm:py-20">
       {/* ambient glow, purely decorative */}
       <div className="pointer-events-none absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/20 blur-[100px]" />
+
+      {/* Continuous flow animation for connector arrows. Three staggered
+          copies of each arrow fade in near the start and slide/fade out
+          toward the end, creating a seamless repeating "flow" effect in the
+          direction of travel. Respects prefers-reduced-motion. */}
+      <style>{`
+        .arrow-flow-right { overflow: visible; }
+        .arrow-flow-down { overflow: visible; }
+
+        .arrow-flow-copy {
+          opacity: 0;
+        }
+
+        @keyframes arrowFlowRight {
+          0% { transform: translateX(-60%); opacity: 0; }
+          15% { opacity: 1; }
+          70% { opacity: 1; }
+          100% { transform: translateX(60%); opacity: 0; }
+        }
+
+        @keyframes arrowFlowDown {
+          0% { transform: translateY(-60%); opacity: 0; }
+          15% { opacity: 1; }
+          70% { opacity: 1; }
+          100% { transform: translateY(60%); opacity: 0; }
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
+          .arrow-flow-right .arrow-flow-copy {
+            animation: arrowFlowRight 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+          }
+          .arrow-flow-down .arrow-flow-copy {
+            animation: arrowFlowDown 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .arrow-flow-copy {
+            opacity: 1 !important;
+            transform: none !important;
+          }
+          .arrow-flow-copy:not(:first-child) {
+            display: none;
+          }
+        }
+      `}</style>
 
       <div
         ref={headingRef}
@@ -136,12 +216,7 @@ export default function EarningRoadmap() {
             </svg>
           </span>
         </h2>
-        {/* <p className="mt-3 text-sm text-[#C9BEE8] sm:text-base">
-          A simple path from learning{" "}
-          <span className="mx-1 text-[#B69EEF]">→</span> building{" "}
-          <span className="mx-1 text-[#B69EEF]">→</span> earning
-        </p> */}
-        <p className="mt-3 text-sm text-[#C9BEE8] sm:text-base">
+        <p className="mt-3 text-[17px] text-[#C9BEE8] sm:text-base">
           A simple path from {" "}<br />
           <span className="mx-1 text-[#B69EEF]"></span> learning{" "}
           <span className="mx-1 text-[#B69EEF]">+</span> building{" "}
@@ -163,12 +238,8 @@ export default function EarningRoadmap() {
 
               {i < steps.length - 1 && (
                 <>
-                  <div className="flex items-center justify-center py-0.5 sm:hidden">
-                    <ArrowDown className="h-4 w-4 shrink-0 text-[#8B6FE0]" />
-                  </div>
-                  <div className="hidden shrink-0 items-center sm:flex">
-                    <ArrowRight className="mx-1 h-5 w-5 shrink-0 text-[#8B6FE0]" />
-                  </div>
+                  <FlowArrow direction="down" />
+                  <FlowArrow direction="right" />
                 </>
               )}
             </div>

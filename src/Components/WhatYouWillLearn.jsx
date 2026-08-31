@@ -481,14 +481,16 @@ export default function WhatYoullLearn() {
         {/* CTA */}
         <div className="mt-14 flex justify-center">
           <Button
-            href="#"
-            variant="gradient"
+            href="https://rzp.io/rzp/AD2PP0lT"
             size="lg"
             icon={ArrowRight}
+            iconPosition="right"
             pulse
-            className="uppercase tracking-wide"
+            shine
+            fullWidth
+            className="uppercase tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
           >
-            Start Learning Today
+            Join The Program Now
           </Button>
         </div>
       </div>

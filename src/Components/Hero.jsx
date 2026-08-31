@@ -3,14 +3,16 @@ import {
   ArrowRight,
   MessageCircle,
   Play,
-  Sparkles,
   Star,
 } from "lucide-react";
 import Button from "./Button";
+import CALogo from "../assets/CA.png";
+import HeroImage from "../assets/Sohilsirlp.png";
+
 
 /**
  * Violet-themed hero for the Landing Page Mastery Program.
- * React + Tailwind. Swap the video src, avatars and numbers for your own.
+ * React + Tailwind. Swap the image, avatars and numbers for your own.
  * Breakpoints used: base = phones (<640px), sm = large phones/small tablets,
  * md = tablets, lg = desktop.
  *
@@ -84,13 +86,14 @@ export default function HeroSection() {
         style={delay(0)}
       >
         <a href="#" className="flex min-w-0 items-center gap-2 text-sm font-bold text-slate-900 sm:text-lg">
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-violet-600 text-white transition-transform duration-300 hover:rotate-12 sm:h-8 sm:w-8">
-            <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-          </span>
-          <span className="truncate">Creative Adhyayan</span>
+          <img
+            src={CALogo}
+            alt="Creative Adhyayan"
+            className="h-8 w-auto shrink-0 object-contain transition-transform duration-300 hover:rotate-12 sm:h-12"
+          />
         </a>
         <Button
-          href="#"
+          href="https://rzp.io/rzp/AD2PP0lT"
           size="md"
           iconPosition="right"
           pulse
@@ -127,7 +130,7 @@ export default function HeroSection() {
 
         {/* subheadline */}
         <p
-          className={`mx-auto mt-3 max-w-2xl text-sm font-semibold text-slate-700 sm:mt-4 sm:text-lg ${step(
+          className={`mx-auto mt-3 max-w-2xl text-[15px] font-semibold text-slate-700 sm:mt-4 capitalize sm:text-lg ${step(
             3
           )}`}
           style={delay(240)}
@@ -135,20 +138,16 @@ export default function HeroSection() {
           A practical, step-by-step programme to help you master landing page creation, build your portfolio, and start monetizing your skill.
         </p>
 
-        {/* video centerpiece */}
+        {/* image centerpiece */}
         <div
           className={`relative mx-auto mt-6 max-w-3xl sm:mt-8 ${step(4)}`}
           style={delay(340)}
         >
           <div className="group relative overflow-hidden rounded-2xl border border-violet-100 bg-slate-900 shadow-xl shadow-violet-200/60 transition-shadow duration-500 hover:shadow-2xl hover:shadow-violet-300/70 sm:rounded-3xl sm:shadow-2xl">
-            <video
+            <img
               className="aspect-video w-full scale-100 object-cover opacity-90 transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-              src="https://cdn.coverr.co/videos/coverr-typing-on-a-laptop-9788/1080p.mp4"
-              poster="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?q=80&w=1200&auto=format&fit=crop"
-              autoPlay
-              loop
-              muted
-              playsInline
+              src={HeroImage}
+              alt="Landing page creation preview"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 
@@ -180,14 +179,15 @@ export default function HeroSection() {
             icon={ArrowRight}
             iconPosition="right"
             pulse
+            shine
             fullWidth
             className="uppercase tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
           >
-            Book Your Slot
+            Join The Program Now
           </Button>
 
           <Button
-            href="https://rzp.io/rzp/AD2PP0lT"
+            href="https://wa.me/919899669649"
             target="_blank"
             variant="emeraldOutline"
             size="lg"

@@ -295,13 +295,15 @@ export default function JourneySections() {
                     <Reveal delay={useCases.length * 70 + 150} className="mt-10 flex justify-center">
                         <Button
                             href="https://rzp.io/rzp/AD2PP0lT"
-                            variant="gradient"
                             size="lg"
                             icon={ArrowRight}
+                            iconPosition="right"
                             pulse
-                            className="uppercase tracking-wide"
+                            shine
+                            fullWidth
+                            className="uppercase tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
                         >
-                            Start Learning Today
+                            Start Your Journey Today
                         </Button>
                     </Reveal>
                 </div>

@@ -14,6 +14,8 @@ import { Loader2 } from "lucide-react";
  * <Button as={Link} to="/dashboard">Go to dashboard</Button>
  * <Button variant="gradient" icon={ArrowRight} size="lg">Join The Program Now</Button>
  * <Button variant="gradient" pulse icon={ArrowRight} size="lg">Join The Program Now</Button>
+ * <Button variant="gradient" shine icon={ArrowRight} size="lg">Join The Program Now</Button>
+ * <Button variant="gradient" pulse shine icon={ArrowRight} size="lg">Join The Program Now</Button>
  *
  * Props:
  * - variant: "primary" | "secondary" | "outline" | "ghost" | "danger" | "gradient" | "emeraldOutline"  (default "primary")
@@ -25,6 +27,10 @@ import { Loader2 } from "lucide-react";
  * - fullWidth: boolean — stretches to 100% of its container
  * - pulse: boolean — adds a slow outward pulsing ring, like a "look here"
  *   CTA glow. Respects prefers-reduced-motion (no animation if set).
+ * - shine: boolean — adds a continuous diagonal light-sweep animation across
+ *   the button surface, like a shimmer/glare effect. Respects
+ *   prefers-reduced-motion (no animation if set). Combine with `pulse` for
+ *   both effects at once.
  * - loading: boolean — shows a spinner, disables the button, sets aria-busy
  * - loadingText: string — replaces children while loading (children stay if omitted)
  * - disabled: boolean
@@ -41,6 +47,35 @@ import { Loader2 } from "lucide-react";
  * "group" class automatically so the icon can slide on hover — no need to
  * add group yourself.
  */
+
+// Custom flags this component understands. Even though every one of these is
+// already destructured out of props below (so `rest` never contains them in
+// normal use), we defensively strip them again right before spreading onto a
+// real DOM node/native element. This guards against the classic React
+// warning — "Received `true` for a non-boolean attribute `X`" — if this
+// component is ever refactored and someone forgets to destructure a new
+// custom prop, or if `as` is given a plain DOM tag string that inherits
+// props from a spread object further up the tree.
+const CUSTOM_FLAGS = [
+    "variant",
+    "size",
+    "shape",
+    "icon",
+    "iconPosition",
+    "iconOnly",
+    "fullWidth",
+    "pulse",
+    "shine",
+    "loading",
+    "loadingText",
+];
+
+function stripCustomFlags(props) {
+    const clean = { ...props };
+    for (const key of CUSTOM_FLAGS) delete clean[key];
+    return clean;
+}
+
 const Button = forwardRef(function Button(
     {
         children,
@@ -52,10 +87,11 @@ const Button = forwardRef(function Button(
         iconOnly = false,
         fullWidth = false,
         pulse = false,
+        shine = false,
         loading = false,
         loadingText,
         disabled = false,
-        href="https://rzp.io/rzp/AD2PP0lT",
+        href = "https://rzp.io/rzp/AD2PP0lT",
         as,
         className = "",
         onClick,
@@ -72,6 +108,10 @@ const Button = forwardRef(function Button(
         );
     }
 
+    // Belt-and-suspenders: rest should already be clean since every custom
+    // flag above is destructured, but strip again in case of drift.
+    const safeRest = stripCustomFlags(rest);
+
     const isDisabled = disabled || loading;
 
     const base =
@@ -80,6 +120,10 @@ const Button = forwardRef(function Button(
         "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600 " +
         "disabled:cursor-not-allowed disabled:opacity-60 disabled:pointer-events-none " +
         "active:scale-[0.97]";
+
+    // `shine` needs the root to clip the sweeping highlight to the button's
+    // own shape (pill/rounded), so we force overflow-hidden when it's on.
+    const shineClip = shine ? "overflow-hidden" : "";
 
     const shapes = {
         pill: "rounded-full",
@@ -118,6 +162,7 @@ const Button = forwardRef(function Button(
     const classes = [
         base,
         groupClass,
+        shineClip,
         shapes[shape] ?? shapes.pill,
         sizes[size] ?? sizes.md,
         variants[variant] ?? variants.primary,
@@ -139,7 +184,48 @@ const Button = forwardRef(function Button(
                 100% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0); }
             }
             @media (prefers-reduced-motion: no-preference) {
-                .btn-pulse-ring { animation: btnPulseRing 2.8s ease-out infinite; }
+                .btn-pulse-ring { animation: btnPulseRing 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+            }
+        `}</style>
+    ) : null;
+
+    // Continuous diagonal shine/shimmer sweep. A ::before pseudo-element
+    // (via a scoped class) carries a soft white gradient band that glides
+    // from off-screen-left to off-screen-right on a loop. Both the start and
+    // end positions sit well outside the button's bounds, so the loop
+    // restart is invisible — no jump-cut, just a smooth recurring glide.
+    // Eased with a gentle cubic-bezier (ease-in-out-ish, slightly slower
+    // start/end) instead of linear or plain ease, so the sweep feels like a
+    // soft glide rather than a mechanical wipe.
+    const shineStyle = shine ? (
+        <style>{`
+            @keyframes btnShineSweep {
+                0% { transform: translateX(-160%) skewX(-20deg); }
+                55% { transform: translateX(160%) skewX(-20deg); }
+                100% { transform: translateX(160%) skewX(-20deg); }
+            }
+            .btn-shine-sweep {
+                isolation: isolate;
+            }
+            .btn-shine-sweep::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                width: 45%;
+                background: linear-gradient(
+                    100deg,
+                    rgba(255, 255, 255, 0) 0%,
+                    rgba(255, 255, 255, 0.65) 50%,
+                    rgba(255, 255, 255, 0) 100%
+                );
+                transform: translateX(-160%) skewX(-20deg);
+                pointer-events: none;
+                will-change: transform;
+            }
+            @media (prefers-reduced-motion: no-preference) {
+                .btn-shine-sweep::before {
+                    animation: btnShineSweep 3.2s cubic-bezier(0.45, 0, 0.2, 1) infinite;
+                }
             }
         `}</style>
     ) : null;
@@ -163,10 +249,10 @@ const Button = forwardRef(function Button(
             ) : (
                 Icon && iconPosition === "left" && <Icon className={iconSize[size]} />
             )}
-            <span>{label}</span>
+            <span className="relative z-[1]">{label}</span>
             {!loading && Icon && iconPosition === "right" && (
                 <Icon
-                    className={`${iconSize[size]} transition-transform duration-300 group-hover:translate-x-1`}
+                    className={`${iconSize[size]} relative z-[1] transition-transform duration-300 group-hover:translate-x-1`}
                 />
             )}
         </>
@@ -182,11 +268,11 @@ const Button = forwardRef(function Button(
 
     const sharedProps = {
         ref,
-        className: classes,
+        className: shine ? `${classes} btn-shine-sweep` : classes,
         "aria-busy": loading || undefined,
         "aria-disabled": isDisabled || undefined,
         onClick: handleClick,
-        ...rest,
+        ...safeRest,
     };
 
     // Custom element/component override (e.g. react-router Link)
@@ -195,6 +281,7 @@ const Button = forwardRef(function Button(
         return (
             <>
                 {pulseStyle}
+                {shineStyle}
                 <Component {...sharedProps} target={target} rel={safeRel}>
                     {content}
                 </Component>
@@ -207,6 +294,7 @@ const Button = forwardRef(function Button(
         return (
             <>
                 {pulseStyle}
+                {shineStyle}
                 <a
                     {...sharedProps}
                     href={isDisabled ? undefined : href}
@@ -223,6 +311,7 @@ const Button = forwardRef(function Button(
     return (
         <>
             {pulseStyle}
+            {shineStyle}
             <button type={rest.type ?? "button"} disabled={isDisabled} {...sharedProps}>
                 {content}
             </button>

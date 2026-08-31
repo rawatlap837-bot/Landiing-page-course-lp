@@ -1,29 +1,30 @@
 import { useEffect, useRef, useState } from "react";
 import { Star, BadgeCheck, Sparkles, Quote } from "lucide-react";
+import MentorPhoto from "../assets/mentor image.png";
 
 const floatingStats = [
     {
-        value: "5+",
+        value: "4+",
         label: "Years Experience",
-        position: "top-6 right-3 sm:-right-6",
+        position: "top-3 right-2 sm:top-6 sm:right-3 sm:-right-6",
     },
     {
         value: "300+",
         label: "Students Mentored",
-        position: "top-1/2 left-1 -translate-y-1/2 sm:-left-10 sm:translate-y-0",
+        position: "top-1/2 -translate-y-1/2 left-1 sm:-left-10",
     },
     {
         value: "₹50L+",
         label: "Client Revenue Generated",
-        position: "bottom-6 right-3 sm:right-0",
+        position: "bottom-3 right-2 sm:bottom-6 sm:right-0",
     },
 ];
 
 const credentials = [
-    "5+ years building landing pages for real clients",
-    "Worked with 40+ businesses across niches",
+    "4+ years of hands-on experience in digital marketing",
+    "Worked directly with businesses and clients across niches",
     "Built the exact curriculum used in this program",
-    "Still actively freelancing & taking on client work",
+    "Founder, agency owner & practicing entrepreneur",
 ];
 
 const logos = ["Amazon", "Shopify", "Razorpay", "Zoho", "Freshworks"];
@@ -94,9 +95,9 @@ export default function AboutMentor() {
                     >
                         <div className="absolute inset-0 -z-10 rounded-[2rem] bg-gradient-to-br from-[#EDE7FB] to-[#E0D6FA]" />
                         <img
-                            src="https://images.unsplash.com/photo-1742518424481-b39a7cb4c80e?q=80&w=800&auto=format&fit=crop"
-                            alt="Program mentor"
-                            className="h-[340px] w-full rounded-[2rem] object-cover shadow-[0_20px_45px_rgba(76,29,149,0.18)] xs:h-[380px] sm:h-[420px]"
+                            src={MentorPhoto}
+                            alt="Sohil Alvi — Founder, Digital Marketer, Agency Owner"
+                            className="h-[340px] w-full rounded-[2rem] object-cover object-top shadow-[0_20px_45px_rgba(76,29,149,0.18)] xs:h-[380px] sm:h-[420px]"
                         />
                         {/* quote accent */}
                         <span className="absolute -bottom-4 -left-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#1C1533] text-white shadow-lg sm:-left-5">
@@ -110,19 +111,19 @@ export default function AboutMentor() {
                                     transitionDelay: photoInView ? `${300 + i * 150}ms` : "0ms",
                                 }}
                                 className={`absolute ${stat.position
-                                    } flex items-center gap-2 rounded-2xl bg-white/95 px-3.5 py-2.5 shadow-[0_8px_24px_rgba(109,40,217,0.2)] ring-1 ring-[#EFEAFB] backdrop-blur-sm transition-all duration-500 ease-out sm:px-4 sm:py-3 ${photoInView
+                                    } flex items-center gap-1.5 rounded-xl bg-white/95 px-2 py-1.5 shadow-[0_8px_24px_rgba(109,40,217,0.2)] ring-1 ring-[#EFEAFB] backdrop-blur-sm transition-all duration-500 ease-out sm:gap-2 sm:rounded-2xl sm:px-4 sm:py-3 ${photoInView
                                         ? "scale-100 opacity-100"
                                         : "scale-75 opacity-0"
                                     }`}
                             >
-                                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#7C3AED] to-[#4C1D95] text-xs font-bold text-white sm:h-9 sm:w-9">
-                                    <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#7C3AED] to-[#4C1D95] text-xs font-bold text-white sm:h-9 sm:w-9 sm:rounded-xl">
+                                    <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
                                 </span>
                                 <div className="leading-tight">
-                                    <p className="text-xs font-extrabold text-[#1C1533] sm:text-sm">
+                                    <p className="whitespace-nowrap text-[10px] font-extrabold text-[#1C1533] sm:text-sm">
                                         {stat.value}
                                     </p>
-                                    <p className="whitespace-nowrap text-[9px] text-[#8A8496] sm:text-[10px]">
+                                    <p className="hidden whitespace-nowrap text-[10px] text-[#8A8496] sm:block">
                                         {stat.label}
                                     </p>
                                 </div>
@@ -139,15 +140,28 @@ export default function AboutMentor() {
                             }`}
                     >
                         <h2 className="text-[1.75rem] font-extrabold leading-tight tracking-tight text-[#1C1533] xs:text-3xl sm:text-4xl">
-                            Taught By Someone Who Actually{" "}
-                            <span className="text-[#6D28D9]">Does This For A Living.</span>
+                            Learn From Someone Who{" "}
+                            <span className="text-[#6D28D9]">Built It In The Real World.</span>
                         </h2>
 
+                        <p className="mt-5 text-[35px] font-bold text-[#4b05bb]">
+                            Sohil Alvi
+                        </p>
+                        <p className="text-sm font-semibold text-[#6D28D9]">
+                            Founder • Digital Marketer • Agency Owner • Entrepreneur
+                        </p>
+
                         <p className="mt-5 text-sm leading-relaxed text-[#6B6578] sm:text-base">
-                            This isn't theory borrowed from a textbook. Every framework in
-                            this program comes from real landing pages, built for real
-                            clients, that were actually paid for — refined into a
-                            curriculum you can follow step by step.
+                            With 4+ years of experience in digital marketing and
+                            hands-on experience working with businesses and clients,
+                            Sohil has learned what actually works beyond just theory.
+                        </p>
+
+                        <p className="mt-4 text-sm leading-relaxed text-[#6B6578] sm:text-base">
+                            Through this programme, he's bringing that practical
+                            experience into a step-by-step system designed to help you
+                            master landing page creation and turn the skill into a
+                            professional service.
                         </p>
 
                         <ul className="mt-7 space-y-3">

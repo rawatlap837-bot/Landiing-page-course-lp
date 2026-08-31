@@ -24,7 +24,7 @@ export default function LearnSmarter() {
             ))}
           </ul>
           <a
-            href="#"
+            href="https://rzp.io/rzp/AD2PP0lT"
             className="mt-8 inline-block rounded-full bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-500"
           >
             Start learning today
