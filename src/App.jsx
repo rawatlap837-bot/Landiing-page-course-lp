@@ -1,13 +1,13 @@
-import WhyLP from './Components/WhyLP'
-import WhatYouWillLearn from './Components/WhatYouWillLearn'
-import Features from './Components/Features'
-import Footer from './Components/Footer'
-import Hero from './Components/Hero'
-import LearnSmarter from './Components/LearnSmarter'
-import Testimonials from './Components/Testimonials'
-import WhatYouGetAndWhoFor from './Components/Whatyougetandwhofor'
-import JourneySections from "./Components/JourneySections"
-import AboutMentor from './Components/Aboutmentor'
+import WhyLP from './Components/WhyLP.jsx'
+import WhatYouWillLearn from './Components/WhatYouWillLearn.jsx'
+import Features from './Components/Features.jsx'
+import Footer from './Components/Footer.jsx'
+import Hero from './Components/Hero.jsx'
+import LearnSmarter from './Components/LearnSmarter.jsx'
+import Testimonials from './Components/Testimonials.jsx'
+import WhatYouGetAndWhoFor from './Components/Whatyougetandwhofor.jsx'
+import JourneySections from "./Components/Journeysections.jsx"
+import AboutMentor from './Components/Aboutmentor.jsx'
 
 function App() {
   return (
@@ -20,7 +20,7 @@ function App() {
       <Testimonials />
       <WhatYouGetAndWhoFor />
       <LearnSmarter />
-      <Journeysections />
+      <JourneySections />
       <Footer />
     </>
   )
