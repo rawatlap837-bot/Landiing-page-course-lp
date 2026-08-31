@@ -1,48 +1,262 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  Gem,
-  PenTool,
-  Laptop,
-  Briefcase,
-  Users,
-  IndianRupee,
-  Sun,
-  MessageSquare,
-  Code2,
-  Rocket,
-  ArrowRight,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import Button from "../components/Button";
+
+/* ---------------------------------------------------------------------- */
+/*  Custom illustrated icons (flat, multi-color) — replace lucide icons   */
+/* ---------------------------------------------------------------------- */
+
+function LandingPageIllustration({ className }) {
+  return (
+    <svg viewBox="0 0 48 48" className={className} fill="none">
+      <rect x="4" y="8" width="40" height="32" rx="5" fill="#EDE7FB" />
+      <rect x="4" y="8" width="40" height="9" rx="5" fill="#6D28D9" />
+      <circle cx="10" cy="12.5" r="1.6" fill="#EDE7FB" />
+      <circle cx="15" cy="12.5" r="1.6" fill="#EDE7FB" />
+      <circle cx="20" cy="12.5" r="1.6" fill="#EDE7FB" />
+      <rect x="10" y="22" width="20" height="4" rx="2" fill="#A78BFA" />
+      <rect x="10" y="29" width="13" height="3" rx="1.5" fill="#C4B5F2" />
+      <rect x="10" y="34" width="9" height="3.5" rx="1.75" fill="#F59E0B" />
+    </svg>
+  );
+}
+
+function CopywritingIllustration({ className }) {
+  return (
+    <svg viewBox="0 0 48 48" className={className} fill="none">
+      <rect x="9" y="6" width="26" height="36" rx="3" fill="#EDE7FB" />
+      <rect x="13" y="13" width="18" height="2.6" rx="1.3" fill="#C4B5F2" />
+      <rect x="13" y="19" width="18" height="2.6" rx="1.3" fill="#C4B5F2" />
+      <rect x="13" y="25" width="11" height="2.6" rx="1.3" fill="#C4B5F2" />
+      <path
+        d="M27 30 L38 19 L42 23 L31 34 L26 35 Z"
+        fill="#F59E0B"
+        stroke="#B45309"
+        strokeWidth="1"
+        strokeLinejoin="round"
+      />
+      <path d="M35 21 L40 26" stroke="#B45309" strokeWidth="1" />
+    </svg>
+  );
+}
+
+function ToolsIllustration({ className }) {
+  return (
+    <svg viewBox="0 0 48 48" className={className} fill="none">
+      <rect x="7" y="14" width="26" height="20" rx="3" fill="#EDE7FB" />
+      <rect x="7" y="14" width="26" height="6" rx="3" fill="#6D28D9" />
+      <circle cx="24" cy="26" r="6" fill="#A78BFA" />
+      <circle cx="24" cy="26" r="2.4" fill="#EDE7FB" />
+      <path
+        d="M33 30 L41 38 C42 39 42 41 41 42 C40 43 38 43 37 42 L29 34"
+        fill="#F59E0B"
+      />
+      <rect
+        x="27.5"
+        y="30.5"
+        width="6"
+        height="6"
+        rx="1.5"
+        transform="rotate(45 30.5 33.5)"
+        fill="#F59E0B"
+      />
+    </svg>
+  );
+}
+
+function PortfolioIllustration({ className }) {
+  return (
+    <svg viewBox="0 0 48 48" className={className} fill="none">
+      <rect x="6" y="18" width="36" height="22" rx="4" fill="#EDE7FB" />
+      <path
+        d="M17 18 V14 a3 3 0 0 1 3 -3 h8 a3 3 0 0 1 3 3 v4"
+        stroke="#6D28D9"
+        strokeWidth="2.6"
+        fill="none"
+      />
+      <rect x="6" y="24" width="36" height="7" fill="#A78BFA" />
+      <circle cx="24" cy="27.5" r="3.4" fill="#F59E0B" />
+      <path
+        d="M22.4 27.5 L23.5 28.7 L25.8 26.2"
+        stroke="white"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+    </svg>
+  );
+}
+
+function ClientsIllustration({ className }) {
+  return (
+    <svg viewBox="0 0 48 48" className={className} fill="none">
+      <circle cx="17" cy="17" r="6" fill="#A78BFA" />
+      <path
+        d="M6 39 C6 30 11 26 17 26 C23 26 28 30 28 39"
+        fill="#C4B5F2"
+      />
+      <circle cx="33" cy="20" r="5" fill="#F59E0B" />
+      <path
+        d="M24 39 C24 32 28 28.5 33 28.5 C38 28.5 42 32 42 39"
+        fill="#FBBF6B"
+      />
+    </svg>
+  );
+}
+
+function MonetizationIllustration({ className }) {
+  return (
+    <svg viewBox="0 0 48 48" className={className} fill="none">
+      <ellipse cx="18" cy="34" rx="12" ry="4" fill="#C4B5F2" />
+      <ellipse cx="18" cy="30" rx="12" ry="4" fill="#A78BFA" />
+      <ellipse cx="18" cy="26" rx="12" ry="4" fill="#6D28D9" />
+      <ellipse cx="18" cy="22" rx="12" ry="4" fill="#8B5CF6" />
+      <text
+        x="18"
+        y="25.5"
+        textAnchor="middle"
+        fontSize="9"
+        fontWeight="700"
+        fill="white"
+      >
+        ₹
+      </text>
+      <path
+        d="M32 24 L40 14"
+        stroke="#F59E0B"
+        strokeWidth="2.6"
+        strokeLinecap="round"
+      />
+      <path d="M40 14 L33 13 M40 14 L39 21" stroke="#F59E0B" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function FoundationIllustration({ className }) {
+  return (
+    <svg viewBox="0 0 48 48" className={className} fill="none">
+      <circle cx="24" cy="15" r="7" fill="#F59E0B" />
+      {[...Array(8)].map((_, i) => {
+        const angle = (i * Math.PI) / 4;
+        const x1 = 24 + Math.cos(angle) * 10;
+        const y1 = 15 + Math.sin(angle) * 10;
+        const x2 = 24 + Math.cos(angle) * 13.5;
+        const y2 = 15 + Math.sin(angle) * 13.5;
+        return (
+          <line
+            key={i}
+            x1={x1}
+            y1={y1}
+            x2={x2}
+            y2={y2}
+            stroke="#FBBF6B"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+        );
+      })}
+      <rect x="7" y="32" width="10" height="9" fill="#A78BFA" />
+      <rect x="19" y="27" width="10" height="14" fill="#6D28D9" />
+      <rect x="31" y="35" width="10" height="6" fill="#C4B5F2" />
+    </svg>
+  );
+}
+
+function DesignCopyIllustration({ className }) {
+  return (
+    <svg viewBox="0 0 48 48" className={className} fill="none">
+      <path
+        d="M24 8 C13 8 6 15 6 24 C6 30 10 32 14 32 C15.5 32 16 30.5 15 29.5 C14 28.5 14.5 27 16 27 H22 C33 27 42 20 42 24 C42 15 35 8 24 8 Z"
+        fill="#EDE7FB"
+      />
+      <circle cx="15" cy="17" r="2.6" fill="#F59E0B" />
+      <circle cx="23" cy="13" r="2.6" fill="#6D28D9" />
+      <circle cx="31" cy="16" r="2.6" fill="#A78BFA" />
+      <circle cx="34" cy="23" r="2.6" fill="#FBBF6B" />
+      <path
+        d="M27 30 L38 19 L42 23 L31 34 L26 35 Z"
+        fill="#8B5CF6"
+        stroke="#6D28D9"
+        strokeWidth="1"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function BuildIllustration({ className }) {
+  return (
+    <svg viewBox="0 0 48 48" className={className} fill="none">
+      <rect x="5" y="10" width="38" height="24" rx="3" fill="#1C1533" />
+      <rect x="8" y="13" width="32" height="18" rx="1.5" fill="#EDE7FB" />
+      <text
+        x="24"
+        y="26"
+        textAnchor="middle"
+        fontSize="10"
+        fontWeight="700"
+        fill="#6D28D9"
+        fontFamily="monospace"
+      >
+        {"</>"}
+      </text>
+      <rect x="16" y="37" width="16" height="3" rx="1.5" fill="#A78BFA" />
+      <rect x="20" y="34" width="8" height="4" fill="#C4B5F2" />
+      <circle cx="12" cy="17" r="1.4" fill="#F59E0B" />
+    </svg>
+  );
+}
+
+function LaunchIllustration({ className }) {
+  return (
+    <svg viewBox="0 0 48 48" className={className} fill="none">
+      <path
+        d="M24 6 C30 12 32 20 30 28 L18 28 C16 20 18 12 24 6 Z"
+        fill="#A78BFA"
+      />
+      <circle cx="24" cy="17" r="3.2" fill="#EDE7FB" />
+      <path d="M18 28 L12 36 L18 34 Z" fill="#F59E0B" />
+      <path d="M30 28 L36 36 L30 34 Z" fill="#F59E0B" />
+      <path d="M21 28 L21 40 L24 44 L27 40 L27 28 Z" fill="#6D28D9" />
+      <path d="M20 41 C17 40 15 37 15 34" stroke="#FBBF6B" strokeWidth="2" strokeLinecap="round" fill="none" />
+      <path d="M28 41 C31 40 33 37 33 34" stroke="#FBBF6B" strokeWidth="2" strokeLinecap="round" fill="none" />
+    </svg>
+  );
+}
+
+/* ---------------------------------------------------------------------- */
 
 const cards = [
   {
     title: "High-Converting\nLanding Page Design",
     detail: "Create professional, modern and conversion-focused pages.",
-    icon: Gem,
+    Illustration: LandingPageIllustration,
   },
   {
     title: "Copywriting &\nSales Psychology",
     detail: "Write content that converts visitors into customers.",
-    icon: PenTool,
+    Illustration: CopywritingIllustration,
   },
   {
     title: "Premium Tools\n& Templates",
     detail: "Hands-on with industry tools and ready-to-use resources.",
-    icon: Laptop,
+    Illustration: ToolsIllustration,
   },
   {
     title: "Real Client Projects",
     detail: "Build project-based portfolio, not just watch theory.",
-    icon: Briefcase,
+    Illustration: PortfolioIllustration,
   },
   {
     title: "Client Acquisition",
     detail: "Learn how to find and approach real clients.",
-    icon: Users,
+    Illustration: ClientsIllustration,
   },
   {
     title: "Monetization Strategy",
     detail: "Package, price and turn your skill into income.",
-    icon: IndianRupee,
+    Illustration: MonetizationIllustration,
   },
 ];
 
@@ -50,7 +264,7 @@ const weeks = [
   {
     label: "Week 1",
     title: "Foundation",
-    icon: Sun,
+    Illustration: FoundationIllustration,
     bullets: [
       "Landing page fundamentals",
       "Page structure",
@@ -62,7 +276,7 @@ const weeks = [
   {
     label: "Week 2",
     title: "Design + Copy",
-    icon: MessageSquare,
+    Illustration: DesignCopyIllustration,
     bullets: [
       "Professional landing page design",
       "Headlines & hooks",
@@ -75,7 +289,7 @@ const weeks = [
   {
     label: "Week 3",
     title: "Build Projects",
-    icon: Code2,
+    Illustration: BuildIllustration,
     bullets: [
       "Build complete landing pages",
       "Work on practical projects",
@@ -87,7 +301,7 @@ const weeks = [
   {
     label: "Week 4",
     title: "Turn Skill Into Service",
-    icon: Rocket,
+    Illustration: LaunchIllustration,
     bullets: [
       "Package your landing page service",
       "Pricing your service",
@@ -127,7 +341,7 @@ function useInView(options) {
   return [ref, inView];
 }
 
-function FeatureCard({ title, detail, icon: Icon, index }) {
+function FeatureCard({ title, detail, Illustration, index }) {
   const [ref, inView] = useInView({ threshold: 0.2 });
 
   return (
@@ -137,8 +351,8 @@ function FeatureCard({ title, detail, icon: Icon, index }) {
       className={`flex items-start gap-4 rounded-2xl border-2 border-violet-100 bg-white p-6 shadow-[0_4px_24px_rgba(109,40,217,0.08)] transition-all duration-500 ease-out hover:-translate-y-1 hover:border-violet-200 hover:shadow-[0_8px_28px_rgba(109,40,217,0.16)] ${inView ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
         }`}
     >
-      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#EDE7FB] to-[#E0D6FA] text-[#6D28D9]">
-        <Icon className="h-7 w-7" strokeWidth={1.75} />
+      <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F5F2FE] to-[#EDE7FB]">
+        <Illustration className="h-16 w-16" />
       </div>
       <div>
         <h3 className="whitespace-pre-line text-base font-bold leading-snug text-[#1C1533]">
@@ -150,7 +364,7 @@ function FeatureCard({ title, detail, icon: Icon, index }) {
   );
 }
 
-function WeekCard({ label, title, bullets, icon: Icon, index }) {
+function WeekCard({ label, title, bullets, Illustration, index }) {
   const [ref, inView] = useInView({ threshold: 0.15 });
 
   return (
@@ -165,11 +379,11 @@ function WeekCard({ label, title, bullets, icon: Icon, index }) {
           {label}
         </span>
 
-        <div className="mx-auto mt-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#EDE7FB] to-[#E0D6FA] text-[#6D28D9]">
-          <Icon className="h-7 w-7" strokeWidth={1.75} />
+        <div className="mt-2 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F5F2FE] to-[#EDE7FB]">
+          <Illustration className="h-14 w-14" />
         </div>
 
-        <h3 className="mt-4 text-center text-base font-bold text-[#1C1533]">
+        <h3 className="mt-4 text-left text-base font-bold text-[#1C1533]">
           {title}
         </h3>
 
@@ -212,8 +426,8 @@ export default function WhatYoullLearn() {
         <div
           ref={headingRef}
           className={`text-center transition-all duration-700 ease-out ${headingInView
-              ? "translate-y-0 opacity-100"
-              : "translate-y-6 opacity-0"
+            ? "translate-y-0 opacity-100"
+            : "translate-y-6 opacity-0"
             }`}
         >
           <h2 className="text-3xl font-extrabold tracking-tight text-[#1C1533] sm:text-4xl">
@@ -246,8 +460,8 @@ export default function WhatYoullLearn() {
         <div
           ref={journeyHeadingRef}
           className={`mt-20 text-center transition-all duration-700 ease-out ${journeyHeadingInView
-              ? "translate-y-0 opacity-100"
-              : "translate-y-6 opacity-0"
+            ? "translate-y-0 opacity-100"
+            : "translate-y-6 opacity-0"
             }`}
         >
           <h2 className="text-3xl font-extrabold tracking-tight text-[#1C1533] sm:text-4xl">
@@ -262,6 +476,20 @@ export default function WhatYoullLearn() {
           {weeks.map((week, i) => (
             <WeekCard key={week.label} {...week} index={i} />
           ))}
+        </div>
+
+        {/* CTA */}
+        <div className="mt-14 flex justify-center">
+          <Button
+            href="#"
+            variant="gradient"
+            size="lg"
+            icon={ArrowRight}
+            pulse
+            className="uppercase tracking-wide"
+          >
+            Start Learning Today
+          </Button>
         </div>
       </div>
     </section>

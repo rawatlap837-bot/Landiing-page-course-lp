@@ -10,7 +10,7 @@ const floatingStats = [
     {
         value: "300+",
         label: "Students Mentored",
-        position: "top-1/2 left-3 -translate-y-1/2 sm:-left-10 sm:translate-y-0",
+        position: "top-1/2 left-1 -translate-y-1/2 sm:-left-10 sm:translate-y-0",
     },
     {
         value: "₹50L+",
@@ -63,13 +63,28 @@ export default function AboutMentor() {
     return (
         <section className="overflow-hidden bg-white py-16 sm:py-20">
             <div className="mx-auto max-w-6xl px-4 sm:px-6">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#EDE7FB] px-4 py-1.5 text-xs font-semibold text-[#6D28D9]">
-                    <BadgeCheck className="h-3.5 w-3.5" />
-                    Meet Your Mentor
-                </span>
-                <div className="grid gap-10 sm:grid-cols-2 sm:items-center sm:gap-14">
-                    {/* photo + floating badges */}
+                <div className="text-center">
+                    <h2 className="text-3xl font-extrabold tracking-tight text-[#1C1533] sm:text-4xl">
+                        Meet Your Mentor
+                    </h2>
+                    <svg
+                        className="mx-auto mt-2"
+                        width="140"
+                        height="10"
+                        viewBox="0 0 140 10"
+                    >
+                        <path
+                            d="M4 6 C 40 -1, 100 -1, 136 6"
+                            fill="none"
+                            stroke="#6D28D9"
+                            strokeWidth="3"
+                            strokeLinecap="round"
+                        />
+                    </svg>
+                </div>
 
+                <div className="mt-8 grid gap-10 sm:mt-10 sm:grid-cols-2 sm:items-center sm:gap-14">
+                    {/* photo + floating badges */}
                     <div
                         ref={photoRef}
                         className={`relative mx-auto w-full max-w-[22rem] transition-all duration-700 ease-out sm:max-w-sm ${photoInView
@@ -77,10 +92,9 @@ export default function AboutMentor() {
                             : "-translate-x-6 opacity-0"
                             }`}
                     >
-
                         <div className="absolute inset-0 -z-10 rounded-[2rem] bg-gradient-to-br from-[#EDE7FB] to-[#E0D6FA]" />
                         <img
-                            src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800&auto=format&fit=crop"
+                            src="https://images.unsplash.com/photo-1742518424481-b39a7cb4c80e?q=80&w=800&auto=format&fit=crop"
                             alt="Program mentor"
                             className="h-[340px] w-full rounded-[2rem] object-cover shadow-[0_20px_45px_rgba(76,29,149,0.18)] xs:h-[380px] sm:h-[420px]"
                         />
@@ -124,9 +138,7 @@ export default function AboutMentor() {
                             : "translate-x-6 opacity-0"
                             }`}
                     >
-
-
-                        <h2 className="mt-4 text-[1.75rem] font-extrabold leading-tight tracking-tight text-[#1C1533] xs:text-3xl sm:text-4xl">
+                        <h2 className="text-[1.75rem] font-extrabold leading-tight tracking-tight text-[#1C1533] xs:text-3xl sm:text-4xl">
                             Taught By Someone Who Actually{" "}
                             <span className="text-[#6D28D9]">Does This For A Living.</span>
                         </h2>

@@ -12,15 +12,19 @@ import { Loader2 } from "lucide-react";
  * <Button fullWidth loading loadingText="Submitting…">Submit</Button>
  * <Button shape="rounded">Not a pill</Button>
  * <Button as={Link} to="/dashboard">Go to dashboard</Button>
+ * <Button variant="gradient" icon={ArrowRight} size="lg">Join The Program Now</Button>
+ * <Button variant="gradient" pulse icon={ArrowRight} size="lg">Join The Program Now</Button>
  *
  * Props:
- * - variant: "primary" | "secondary" | "outline" | "ghost" | "danger"  (default "primary")
+ * - variant: "primary" | "secondary" | "outline" | "ghost" | "danger" | "gradient" | "emeraldOutline"  (default "primary")
  * - size: "sm" | "md" | "lg"                                          (default "md")
  * - shape: "pill" | "rounded"                                         (default "pill")
  * - icon: a lucide-react icon component, e.g. ArrowRight
  * - iconPosition: "left" | "right"                                    (default "right")
  * - iconOnly: boolean — renders a square icon-only button; requires aria-label
  * - fullWidth: boolean — stretches to 100% of its container
+ * - pulse: boolean — adds a slow outward pulsing ring, like a "look here"
+ *   CTA glow. Respects prefers-reduced-motion (no animation if set).
  * - loading: boolean — shows a spinner, disables the button, sets aria-busy
  * - loadingText: string — replaces children while loading (children stay if omitted)
  * - disabled: boolean
@@ -32,6 +36,10 @@ import { Loader2 } from "lucide-react";
  *   and wrap the final class string with `twMerge()`)
  * - ref: forwarded to the underlying <button>/<a>/custom element
  * - all other props (onClick, type, target, etc.) pass straight through
+ *
+ * Note: when icon + iconPosition="right" is used, the root element gets a
+ * "group" class automatically so the icon can slide on hover — no need to
+ * add group yourself.
  */
 const Button = forwardRef(function Button(
     {
@@ -43,10 +51,11 @@ const Button = forwardRef(function Button(
         iconPosition = "right",
         iconOnly = false,
         fullWidth = false,
+        pulse = false,
         loading = false,
         loadingText,
         disabled = false,
-        href,
+        href="https://rzp.io/rzp/AD2PP0lT",
         as,
         className = "",
         onClick,
@@ -96,18 +105,44 @@ const Button = forwardRef(function Button(
         ghost: "text-slate-600 shadow-none hover:bg-slate-100 hover:text-slate-900",
         danger:
             "bg-red-600 text-white shadow-lg shadow-red-300/50 hover:bg-red-700 hover:shadow-red-400/60",
+        gradient:
+            "bg-gradient-to-r from-[#7C3AED] to-[#6D28D9] text-white shadow-lg shadow-violet-900/40 " +
+            "hover:-translate-y-0.5 hover:shadow-violet-700/50",
+        emeraldOutline:
+            "border-2 border-emerald-500 bg-white text-emerald-600 hover:bg-emerald-50",
     };
+
+    // Icon-right buttons get a group class so the icon can animate on hover.
+    const groupClass = !iconOnly && Icon && iconPosition === "right" ? "group" : "";
 
     const classes = [
         base,
+        groupClass,
         shapes[shape] ?? shapes.pill,
         sizes[size] ?? sizes.md,
         variants[variant] ?? variants.primary,
         fullWidth && !iconOnly ? "w-full" : "",
+        pulse ? "btn-pulse-ring" : "",
         className,
     ]
         .filter(Boolean)
         .join(" ");
+
+    // Keyframes are scoped to this component and only rendered when a pulse
+    // button is on the page — mirrors the same ring effect used for the
+    // footer's "Join The Program Now" CTA, now reusable on any Button.
+    const pulseStyle = pulse ? (
+        <style>{`
+            @keyframes btnPulseRing {
+                0% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.45); }
+                70% { box-shadow: 0 0 0 14px rgba(124, 58, 237, 0); }
+                100% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0); }
+            }
+            @media (prefers-reduced-motion: no-preference) {
+                .btn-pulse-ring { animation: btnPulseRing 2.8s ease-out infinite; }
+            }
+        `}</style>
+    ) : null;
 
     // auto-harden target="_blank" links
     const safeRel =
@@ -130,7 +165,9 @@ const Button = forwardRef(function Button(
             )}
             <span>{label}</span>
             {!loading && Icon && iconPosition === "right" && (
-                <Icon className={iconSize[size]} />
+                <Icon
+                    className={`${iconSize[size]} transition-transform duration-300 group-hover:translate-x-1`}
+                />
             )}
         </>
     );
@@ -156,31 +193,40 @@ const Button = forwardRef(function Button(
     if (as) {
         const Component = as;
         return (
-            <Component {...sharedProps} target={target} rel={safeRel}>
-                {content}
-            </Component>
+            <>
+                {pulseStyle}
+                <Component {...sharedProps} target={target} rel={safeRel}>
+                    {content}
+                </Component>
+            </>
         );
     }
 
     // Renders as a link when href is given
     if (href) {
         return (
-            <a
-                {...sharedProps}
-                href={isDisabled ? undefined : href}
-                target={target}
-                rel={safeRel}
-            >
-                {content}
-            </a>
+            <>
+                {pulseStyle}
+                <a
+                    {...sharedProps}
+                    href={isDisabled ? undefined : href}
+                    target={target}
+                    rel={safeRel}
+                >
+                    {content}
+                </a>
+            </>
         );
     }
 
     // Default: a real <button>
     return (
-        <button type={rest.type ?? "button"} disabled={isDisabled} {...sharedProps}>
-            {content}
-        </button>
+        <>
+            {pulseStyle}
+            <button type={rest.type ?? "button"} disabled={isDisabled} {...sharedProps}>
+                {content}
+            </button>
+        </>
     );
 });
 

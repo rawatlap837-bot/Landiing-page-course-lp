@@ -14,6 +14,10 @@ import Button from "./Button";
  * Breakpoints used: base = phones (<640px), sm = large phones/small tablets,
  * md = tablets, lg = desktop.
  *
+ * Every clickable button on this page — navbar, main CTA, WhatsApp link —
+ * renders through the shared <Button /> component so styling, hover
+ * states, and accessibility behavior stay consistent app-wide.
+ *
  * Note: expects Button.jsx to sit next to this file (adjust the import
  * path if you moved it into src/Components).
  *
@@ -85,10 +89,11 @@ export default function HeroSection() {
           </span>
           <span className="truncate">Creative Adhyayan</span>
         </a>
-
         <Button
           href="#"
           size="md"
+          iconPosition="right"
+          pulse
           className="shrink-0 px-4 py-2 text-xs transition-transform duration-300 hover:-translate-y-0.5 sm:px-6 sm:py-3 sm:text-base"
         >
           Book Your Slot
@@ -108,7 +113,7 @@ export default function HeroSection() {
 
         {/* headline */}
         <h1
-          className={`mt-4 text-[2.1rem] font-bold leading-tight tracking-tight text-slate-900 xs:text-3xl sm:mt-5 sm:text-5xl md:text-6xl lg:text-7xl ${step(
+          className={`mt-4 text-[2.3rem] font-bold leading-tight tracking-tight text-slate-900 xs:text-3xl sm:mt-5 sm:text-5xl md:text-6xl lg:text-7xl ${step(
             2
           )}`}
           style={delay(160)}
@@ -127,7 +132,7 @@ export default function HeroSection() {
           )}`}
           style={delay(240)}
         >
-          Build Landing Pages. Understand Conversion. Work With Real Projects.
+          A practical, step-by-step programme to help you master landing page creation, build your portfolio, and start monetizing your skill.
         </p>
 
         {/* video centerpiece */}
@@ -170,25 +175,29 @@ export default function HeroSection() {
           style={delay(420)}
         >
           <Button
-            href="#"
+            href="https://rzp.io/rzp/AD2PP0lT"
             size="lg"
             icon={ArrowRight}
             iconPosition="right"
+            pulse
             fullWidth
-            className="group uppercase tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
+            className="uppercase tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
           >
             Book Your Slot
           </Button>
 
-          <a
-            href="https://wa.me/"
+          <Button
+            href="https://rzp.io/rzp/AD2PP0lT"
             target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full border-2 border-emerald-500 bg-white px-6 py-3.5 text-sm font-bold uppercase tracking-wide text-emerald-600 transition-all duration-300 hover:-translate-y-0.5 hover:bg-emerald-50 sm:w-auto"
+            variant="emeraldOutline"
+            size="lg"
+            icon={MessageCircle}
+            iconPosition="left"
+            fullWidth
+            className="uppercase tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
           >
-            <MessageCircle className="h-4 w-4 shrink-0" />
             Connect On WhatsApp
-          </a>
+          </Button>
         </div>
 
         {/* social proof */}
@@ -215,7 +224,7 @@ export default function HeroSection() {
               ))}
             </div>
             <p className="text-sm font-semibold leading-snug text-slate-800">
-              Join 5,000+ learners who are building their digital careers
+              Join 500+ learners who are building their digital careers
             </p>
           </div>
 

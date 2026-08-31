@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ArrowRight } from "lucide-react";
+import Button from "../components/Button";
+import Digitalproduct from "../assets/digtalproduct.png"
+import landingpage from "../assets/landingpage.jpeg"
+import scaling from "../assets/scaling.jpeg"
 
 const stats = [
   { value: "10M+", label: "Businesses Online" },
-  { value: "₹5K – ₹50K", label: "Per Landing Page" },
+  { value: "₹1K – ₹10K", label: "Per Landing Page" },
   { value: "Growing", label: "Demand", icon: true },
 ];
 
@@ -11,16 +15,13 @@ const stats = [
 // unrelated travel/fitness stock shots.
 const cards = [
   {
-    title: "Grow Your Business",
-    img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=900&auto=format&fit=crop",
+    img: Digitalproduct,
   },
   {
-    title: "Launch Your Digital Product",
-    img: "https://images.unsplash.com/photo-1522542550221-31fd19575a2d?q=80&w=700&auto=format&fit=crop",
+    img: landingpage,
   },
   {
-    title: "Scale Your Coaching Business",
-    img: "https://images.unsplash.com/photo-1573497491208-6b1acb260507?q=80&w=700&auto=format&fit=crop",
+    img: scaling,
   },
 ];
 
@@ -107,8 +108,8 @@ export default function WhyLandingPages() {
               <div
                 key={stat.label}
                 className={`flex items-center justify-between rounded-2xl border-2 border-violet-100 bg-white px-4 py-3.5 shadow-sm transition-all duration-500 ease-out xs:flex-col xs:items-start xs:justify-start xs:py-4 ${copyInView
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-4 opacity-0"
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-4 opacity-0"
                   }`}
                 style={{
                   transitionDelay: copyInView ? `${300 + i * 100}ms` : "0ms",
@@ -126,6 +127,19 @@ export default function WhyLandingPages() {
               </div>
             ))}
           </dl>
+
+          {/* CTA button */}
+          <Button
+            href="https://rzp.io/rzp/AD2PP0lT"
+            variant="gradient"
+            size="lg"
+            icon={ArrowRight}
+            pulse
+            fullWidth
+            className="mt-8 uppercase tracking-wide sm:mt-10 sm:w-auto"
+          >
+            Book Your Slot
+          </Button>
         </div>
 
         {/* stacked mockups */}
@@ -139,14 +153,14 @@ export default function WhyLandingPages() {
           {/* large back card */}
           <div
             className={`absolute right-0 top-0 w-[76%] -rotate-2 overflow-hidden rounded-2xl bg-slate-900 shadow-2xl transition-all duration-700 ease-out hover:-translate-y-1 hover:rotate-0 sm:w-[78%] ${mockupInView
-                ? "translate-x-0 opacity-100"
-                : "translate-x-6 opacity-0"
+              ? "translate-x-0 opacity-100"
+              : "translate-x-6 opacity-0"
               }`}
             style={{ transitionDelay: mockupInView ? "150ms" : "0ms" }}
           >
             <img
               src={cards[0].img}
-              alt={cards[0].title}
+              alt="Grow your business"
               className="h-44 w-full object-cover opacity-80 xs:h-52 sm:h-56 md:h-64"
             />
             <div className="p-4 sm:p-5">
@@ -169,14 +183,14 @@ export default function WhyLandingPages() {
           {/* bottom-left small card */}
           <div
             className={`absolute bottom-14 left-0 w-[56%] -rotate-3 overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-slate-100 transition-all duration-700 ease-out hover:-translate-y-1 hover:rotate-0 sm:bottom-16 sm:w-[58%] ${mockupInView
-                ? "translate-x-0 opacity-100"
-                : "-translate-x-6 opacity-0"
+              ? "translate-x-0 opacity-100"
+              : "-translate-x-6 opacity-0"
               }`}
             style={{ transitionDelay: mockupInView ? "300ms" : "0ms" }}
           >
             <img
               src={cards[1].img}
-              alt={cards[1].title}
+              alt="Launch your digital product"
               className="h-20 w-full object-cover sm:h-24"
             />
             <div className="p-3 sm:p-4">
@@ -185,23 +199,20 @@ export default function WhyLandingPages() {
                 <br />
                 Digital Product
               </p>
-              <span className="mt-2 inline-block rounded-full bg-slate-900 px-2.5 py-1 text-[8px] font-semibold text-white sm:mt-3 sm:px-3 sm:py-1.5 sm:text-[9px]">
-                Get Started
-              </span>
             </div>
           </div>
 
           {/* bottom-right small card */}
           <div
             className={`absolute bottom-0 right-1 w-[50%] rotate-2 overflow-hidden rounded-2xl bg-slate-900 shadow-xl transition-all duration-700 ease-out hover:-translate-y-1 hover:rotate-0 sm:right-2 sm:w-[52%] ${mockupInView
-                ? "translate-y-0 opacity-100"
-                : "translate-y-6 opacity-0"
+              ? "translate-y-0 opacity-100"
+              : "translate-y-6 opacity-0"
               }`}
             style={{ transitionDelay: mockupInView ? "450ms" : "0ms" }}
           >
             <img
               src={cards[2].img}
-              alt={cards[2].title}
+              alt="Scale your coaching business"
               className="h-24 w-full object-cover opacity-80 sm:h-32"
             />
             <div className="p-3 sm:p-4">
@@ -210,9 +221,6 @@ export default function WhyLandingPages() {
                 <br />
                 Business
               </p>
-              <span className="mt-2 inline-block rounded-full bg-violet-600 px-2.5 py-1 text-[8px] font-semibold text-white sm:mt-3 sm:px-3 sm:py-1.5 sm:text-[9px]">
-                Join Now
-              </span>
             </div>
           </div>
         </div>

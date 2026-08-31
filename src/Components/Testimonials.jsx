@@ -7,21 +7,21 @@ const testimonials = [
     role: "Student - Freelancer",
     quote:
       "I got my first client within 3 weeks of joining the program. The practical projects helped a lot!",
-    img: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=200&auto=format&fit=crop",
+    img: "https://images.unsplash.com/photo-1531339413195-cc6c17163974?q=80&w=200&auto=format&fit=crop",
   },
   {
     name: "Priya Sharma",
     role: "UI/UX Designer",
     quote:
       "The best part is it's not just theory. You actually build real landing pages and learn how to sell the skill.",
-    img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop",
+    img: "https://images.unsplash.com/photo-1630001603446-585f8a8d5527?q=80&w=200&auto=format&fit=crop",
   },
   {
     name: "Rohit S.",
     role: "Digital Marketer",
     quote:
       "Clear, simple and practical. Now I have a portfolio and I'm working on client projects.",
-    img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&auto=format&fit=crop",
+    img: "https://images.unsplash.com/photo-1616002851413-ebcc9611139d?q=80&w=200&auto=format&fit=crop",
   },
 ];
 
@@ -103,8 +103,8 @@ export default function TestimonialsAndCTA() {
           <div
             ref={headingRef}
             className={`text-center transition-all duration-700 ease-out ${headingInView
-                ? "translate-y-0 opacity-100"
-                : "translate-y-6 opacity-0"
+              ? "translate-y-0 opacity-100"
+              : "translate-y-6 opacity-0"
               }`}
           >
             <h2 className="text-2xl font-extrabold tracking-tight text-white sm:text-4xl">
@@ -161,8 +161,8 @@ export default function TestimonialsAndCTA() {
             <div className="mt-6 grid gap-3 sm:grid-cols-2 sm:gap-8">
               <div
                 className={`rounded-xl bg-white/10 p-4 transition-all duration-500 ease-out ${ctaInView
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-4 opacity-0"
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-4 opacity-0"
                   }`}
                 style={{ transitionDelay: ctaInView ? "150ms" : "0ms" }}
               >
@@ -175,8 +175,8 @@ export default function TestimonialsAndCTA() {
               </div>
               <div
                 className={`rounded-xl bg-white/15 p-4 ring-1 ring-white/20 transition-all duration-500 ease-out ${ctaInView
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-4 opacity-0"
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-4 opacity-0"
                   }`}
                 style={{ transitionDelay: ctaInView ? "280ms" : "0ms" }}
               >
@@ -198,8 +198,8 @@ export default function TestimonialsAndCTA() {
                   <span
                     key={step}
                     className={`flex items-center gap-2 transition-all duration-500 ease-out ${ctaInView
-                        ? "translate-y-0 opacity-100"
-                        : "translate-y-3 opacity-0"
+                      ? "translate-y-0 opacity-100"
+                      : "translate-y-3 opacity-0"
                       }`}
                     style={{
                       transitionDelay: ctaInView ? `${420 + i * 100}ms` : "0ms",
@@ -218,7 +218,9 @@ export default function TestimonialsAndCTA() {
 
             <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:gap-6">
               <button
+
                 type="button"
+                href="https://rzp.io/rzp/AD2PP0lT"
                 className="flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-[#4C1D95] shadow-lg transition-transform hover:-translate-y-0.5"
               >
                 Join Landing Page Mastery
@@ -226,7 +228,7 @@ export default function TestimonialsAndCTA() {
               </button>
               <span className="flex items-center justify-center gap-1.5 text-sm text-violet-100 sm:justify-start">
                 <Users className="h-4 w-4" />
-                5,000+ learners already joined
+                500+ learners already joined
               </span>
             </div>
           </div>

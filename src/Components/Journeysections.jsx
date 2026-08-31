@@ -1,5 +1,6 @@
-import { Sparkles, X } from "lucide-react";
+import { Sparkles, X, ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import Button from "../components/Button";
 
 const goalSteps = [
     { day: "Day 1", detail: "You start learning." },
@@ -177,16 +178,16 @@ export default function JourneySections() {
                                 >
                                     <span
                                         className={`relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-sm font-bold ring-4 ring-white ${step.final
-                                                ? "pulse-glow bg-gradient-to-br from-[#7C3AED] to-[#4C1D95] text-white shadow-lg shadow-violet-300/50"
-                                                : "bg-white text-[#6D28D9] shadow-sm ring-[#EFEAFB]"
+                                            ? "pulse-glow bg-gradient-to-br from-[#7C3AED] to-[#4C1D95] text-white shadow-lg shadow-violet-300/50"
+                                            : "bg-white text-[#6D28D9] shadow-sm ring-[#EFEAFB]"
                                             }`}
                                     >
                                         {i + 1}
                                     </span>
                                     <div
                                         className={`flex-1 rounded-2xl px-5 py-4 transition-all duration-300 hover:-translate-y-0.5 sm:px-6 ${step.final
-                                                ? "bg-gradient-to-br from-[#7C3AED] to-[#4C1D95] shadow-lg shadow-violet-300/50"
-                                                : "bg-[#F9F7FE] ring-1 ring-[#EFEAFB] hover:shadow-md hover:ring-[#D9CCF7]"
+                                            ? "bg-gradient-to-br from-[#7C3AED] to-[#4C1D95] shadow-lg shadow-violet-300/50"
+                                            : "bg-[#F9F7FE] ring-1 ring-[#EFEAFB] hover:shadow-md hover:ring-[#D9CCF7]"
                                             }`}
                                     >
                                         <p
@@ -256,40 +257,7 @@ export default function JourneySections() {
             </section>
 
             {/* From Learning to Earning */}
-            <section className="bg-gradient-to-b from-white to-[#F5F2FE] py-14 sm:py-20">
-                <div className="mx-auto max-w-4xl px-4 sm:px-6">
-                    <SectionHeading>From Learning To Earning</SectionHeading>
 
-                    <div className="relative mt-10 sm:mt-14">
-                        {/* connecting line: vertical on mobile, horizontal from sm up */}
-                        <div className="pointer-events-none absolute bottom-3 left-5 top-3 w-px bg-gradient-to-b from-transparent via-[#D9CCF7] to-transparent sm:bottom-auto sm:left-5 sm:right-5 sm:top-5 sm:h-px sm:w-auto sm:bg-gradient-to-r" />
-
-                        <div className="flex flex-col gap-6 sm:flex-row sm:justify-between sm:gap-2">
-                            {earningFlow.map((step, i) => (
-                                <Reveal
-                                    key={step}
-                                    delay={i * 90}
-                                    className="relative flex flex-1 items-start gap-4 sm:flex-col sm:items-center sm:gap-3 sm:text-center"
-                                >
-                                    <span className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#6D28D9] text-sm font-bold text-white shadow-md shadow-violet-300/40 ring-4 ring-white transition-transform duration-300 hover:scale-105">
-                                        {i + 1}
-                                    </span>
-                                    <span className="pt-1.5 text-sm font-semibold leading-snug text-[#1C1533] sm:px-1 sm:pt-0 sm:text-xs md:text-sm">
-                                        {step}
-                                    </span>
-                                </Reveal>
-                            ))}
-                        </div>
-                    </div>
-
-                    <Reveal delay={earningFlow.length * 90} className="mx-auto mt-10 max-w-lg text-center">
-                        <p className="text-sm leading-relaxed text-[#6B6578]">
-                            Your first earning may start with your first client. And this
-                            program is designed to help you get ready for that journey.
-                        </p>
-                    </Reveal>
-                </div>
-            </section>
 
             {/* Long-term investment */}
             <section className="bg-white py-14 sm:py-20">
@@ -322,6 +290,19 @@ export default function JourneySections() {
                         <p className="text-sm font-bold text-[#1C1533]">
                             Learn it once. Keep using the skill.
                         </p>
+                    </Reveal>
+
+                    <Reveal delay={useCases.length * 70 + 150} className="mt-10 flex justify-center">
+                        <Button
+                            href="https://rzp.io/rzp/AD2PP0lT"
+                            variant="gradient"
+                            size="lg"
+                            icon={ArrowRight}
+                            pulse
+                            className="uppercase tracking-wide"
+                        >
+                            Start Learning Today
+                        </Button>
                     </Reveal>
                 </div>
             </section>

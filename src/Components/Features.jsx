@@ -77,23 +77,28 @@ function StepCard({ number, label, detail, icon: Icon, index }) {
     <div
       ref={ref}
       style={{ transitionDelay: inView ? `${index * 120}ms` : "0ms" }}
-      className={`group relative flex flex-1 flex-col items-center rounded-2xl bg-white/[0.06] px-5 py-8 text-center ring-1 ring-white/10 backdrop-blur-sm transition-all duration-700 ease-out hover:bg-white/[0.09] hover:ring-white/20 sm:mx-2 ${inView
-          ? "translate-y-0 opacity-100"
-          : "translate-y-8 opacity-0"
+      className={`group relative flex flex-1 items-center gap-4 rounded-2xl bg-white/[0.06] px-4 py-4 text-left ring-1 ring-white/10 backdrop-blur-sm transition-all duration-700 ease-out hover:bg-white/[0.09] hover:ring-white/20 sm:flex-col sm:items-center sm:gap-0 sm:px-5 sm:py-8 sm:text-center sm:mx-2 ${inView
+        ? "translate-y-0 opacity-100"
+        : "translate-y-8 opacity-0"
         }`}
     >
-      <span className="absolute left-4 top-4 flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-[11px] font-bold text-[#C4B5FD] ring-1 ring-white/10">
+      <span className="hidden h-7 w-7 items-center justify-center rounded-full bg-white/10 text-[11px] font-bold text-[#C4B5FD] ring-1 ring-white/10 sm:absolute sm:left-4 sm:top-4 sm:flex">
         {number}
       </span>
 
-      <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#8B5CF6] to-[#6D28D9] text-white shadow-lg shadow-violet-900/50 transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-105">
-        <Icon className="h-10 w-10" strokeWidth={1.75} />
+      <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#8B5CF6] to-[#6D28D9] text-white shadow-lg shadow-violet-900/50 transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-105 sm:h-20 sm:w-20 sm:rounded-2xl">
+        <span className="absolute -left-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#160B33] text-[9px] font-bold text-[#C4B5FD] ring-1 ring-white/10 sm:hidden">
+          {number}
+        </span>
+        <Icon className="h-6 w-6 sm:h-10 sm:w-10" strokeWidth={1.75} />
       </div>
 
-      <h3 className="mt-4 text-base font-bold text-white">{label}</h3>
-      <p className="mt-2 max-w-[11rem] text-sm leading-snug text-[#C9BEE8] sm:max-w-[10rem]">
-        {detail}
-      </p>
+      <div className="min-w-0 sm:mt-4">
+        <h3 className="text-sm font-bold text-white sm:text-base">{label}</h3>
+        <p className="mt-0.5 text-xs leading-snug text-[#C9BEE8] sm:mt-2 sm:max-w-[10rem] sm:text-sm">
+          {detail}
+        </p>
+      </div>
     </div>
   );
 }
@@ -131,10 +136,16 @@ export default function EarningRoadmap() {
             </svg>
           </span>
         </h2>
-        <p className="mt-3 text-sm text-[#C9BEE8] sm:text-base">
+        {/* <p className="mt-3 text-sm text-[#C9BEE8] sm:text-base">
           A simple path from learning{" "}
           <span className="mx-1 text-[#B69EEF]">→</span> building{" "}
           <span className="mx-1 text-[#B69EEF]">→</span> earning
+        </p> */}
+        <p className="mt-3 text-sm text-[#C9BEE8] sm:text-base">
+          A simple path from {" "}<br />
+          <span className="mx-1 text-[#B69EEF]"></span> learning{" "}
+          <span className="mx-1 text-[#B69EEF]">+</span> building{" "}
+          <span className="mx-1 text-[#B69EEF]">=</span> earning
         </p>
       </div>
 
@@ -142,7 +153,7 @@ export default function EarningRoadmap() {
         {/* connecting line: vertical on mobile, horizontal on desktop */}
         <div className="pointer-events-none absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-white/15 to-transparent sm:block sm:h-px sm:w-full sm:translate-x-0 sm:bg-gradient-to-r sm:top-1/2 sm:-translate-y-1/2" />
 
-        <div className="flex flex-col items-stretch gap-6 sm:flex-row sm:items-stretch sm:gap-0">
+        <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-stretch sm:gap-0">
           {steps.map((step, i) => (
             <div
               key={step.number}
@@ -152,8 +163,8 @@ export default function EarningRoadmap() {
 
               {i < steps.length - 1 && (
                 <>
-                  <div className="flex items-center justify-center py-1 sm:hidden">
-                    <ArrowDown className="h-5 w-5 shrink-0 text-[#8B6FE0]" />
+                  <div className="flex items-center justify-center py-0.5 sm:hidden">
+                    <ArrowDown className="h-4 w-4 shrink-0 text-[#8B6FE0]" />
                   </div>
                   <div className="hidden shrink-0 items-center sm:flex">
                     <ArrowRight className="mx-1 h-5 w-5 shrink-0 text-[#8B6FE0]" />

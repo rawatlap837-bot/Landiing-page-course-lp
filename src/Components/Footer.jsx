@@ -136,6 +136,7 @@ export default function FinalCTAAndFooter() {
           <Reveal delay={320}>
             <button
               type="button"
+              href="https://rzp.io/rzp/AD2PP0lT"
               className="cta-button group mx-auto mt-8 flex items-center gap-2 rounded-full bg-gradient-to-r from-[#7C3AED] to-[#6D28D9] px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-violet-900/40 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-violet-700/50 active:translate-y-0 active:scale-[0.98]"
             >
               Join The Program Now

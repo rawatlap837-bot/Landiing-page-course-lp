@@ -16,10 +16,10 @@ function App() {
       <Features />
       <WhyLP />
       <WhatYouWillLearn />
+      <AboutMentor />
       <Testimonials />
       <WhatYouGetAndWhoFor />
       <LearnSmarter />
-      <AboutMentor />
       <Journeysections />
       <Footer />
     </>

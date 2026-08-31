@@ -7,7 +7,9 @@ import {
     Palette,
     Megaphone,
     Rocket,
+    ArrowRight,
 } from "lucide-react";
+import Button from "../components/Button";
 
 const perks = [
     "1-Month Structured Program",
@@ -181,6 +183,20 @@ export default function WhatYouGetAndWhoFor() {
                         {personas.map((persona, i) => (
                             <PersonaCard key={persona.title} {...persona} index={i} />
                         ))}
+                    </div>
+
+                    {/* CTA */}
+                    <div className="mt-14 flex justify-center">
+                        <Button
+                            href="https://rzp.io/rzp/AD2PP0lT"
+                            variant="gradient"
+                            size="lg"
+                            icon={ArrowRight}
+                            pulse
+                            className="uppercase tracking-wide"
+                        >
+                            Start Learning Today
+                        </Button>
                     </div>
                 </div>
             </section>

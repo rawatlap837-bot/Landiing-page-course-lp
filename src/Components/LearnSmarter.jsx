@@ -1,4 +1,4 @@
-import { CheckCircle2, Play } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 
 const points = [
   "High quality video lessons",
@@ -34,18 +34,11 @@ export default function LearnSmarter() {
         <div className="relative">
           <div className="overflow-hidden rounded-2xl border border-white/10 bg-slate-800 shadow-2xl">
             <img
-              src="https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?q=80&w=800&auto=format&fit=crop"
-              alt="Course preview on a laptop and phone"
+              src="https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?q=80&w=800&auto=format&fit=crop"
+              alt="Student learning online on a laptop"
               className="h-64 w-full object-cover sm:h-80"
             />
           </div>
-          <button
-            type="button"
-            aria-label="Play preview"
-            className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-violet-600 shadow-xl transition hover:scale-105"
-          >
-            <Play className="h-5 w-5 fill-current" />
-          </button>
         </div>
       </div>
     </section>
