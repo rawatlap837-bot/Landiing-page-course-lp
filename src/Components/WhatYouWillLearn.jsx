@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
-import Button from "../components/Button";
+import Button from "../Components/Button";
 
 /* ---------------------------------------------------------------------- */
 /*  Custom illustrated icons (flat, multi-color) — replace lucide icons   */
