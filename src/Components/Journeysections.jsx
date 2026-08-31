@@ -1,6 +1,6 @@
 import { Sparkles, X, ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import Button from "../components/Button";
+import Button from "../Components/Button";
 
 const goalSteps = [
     { day: "Day 1", detail: "You start learning." },

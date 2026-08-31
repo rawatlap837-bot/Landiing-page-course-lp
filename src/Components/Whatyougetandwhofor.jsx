@@ -9,7 +9,7 @@ import {
     Rocket,
     ArrowRight,
 } from "lucide-react";
-import Button from "../components/Button";
+import Button from "../Components/Button";
 
 const perks = [
     "1-Month Structured Program",

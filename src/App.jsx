@@ -6,7 +6,7 @@ import Hero from './Components/Hero'
 import LearnSmarter from './Components/LearnSmarter'
 import Testimonials from './Components/Testimonials'
 import WhatYouGetAndWhoFor from './Components/Whatyougetandwhofor'
-import Journeysections from './Components/Journeysections'
+import JourneySections from "./Components/JourneySections"
 import AboutMentor from './Components/Aboutmentor'
 
 function App() {

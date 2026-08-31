@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
-import Button from "../components/Button";
+import Button from "../Components/Button";
 import Digitalproduct from "../assets/digtalproduct.png"
 import landingpage from "../assets/landingpage.jpeg"
 import scaling from "../assets/scaling.jpeg"
