@@ -1,23 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Volume2, VolumeX } from "lucide-react";
 
+import testimonial1 from "../assets/testimonial 1.mp4";
+import testimonial3 from "../assets/testimonial 3.mp4";
+import testimonial4 from "../assets/testimonial 4.mp4";
+
 const slides = [
-    { id: "QkoGHz2dDpI" },
-    { id: "51HLdU_A1ps" },
-    { id: "GAD02I0HQhk" },
+    { id: "testimonial-1", src: testimonial1 },
+    { id: "testimonial-3", src: testimonial3 },
+    { id: "testimonial-4", src: testimonial4 },
 ];
+
 const AUTO_SCROLL_MS = 4000;
 const DESKTOP_BREAKPOINT = 768; // matches Tailwind's `md`
-
-// Sends a command to a YouTube iframe via the postMessage API.
-// Requires the iframe src to include `enablejsapi=1`.
-function sendYouTubeCommand(iframe, func, args = []) {
-    if (!iframe?.contentWindow) return;
-    iframe.contentWindow.postMessage(
-        JSON.stringify({ event: "command", func, args }),
-        "https://www.youtube.com"
-    );
-}
 
 // Tracks whether we're at/above the desktop breakpoint, so a single set of
 // video tiles can be re-laid-out (grid vs. sliding carousel) instead of
@@ -41,45 +36,35 @@ function useIsDesktop(breakpointPx = DESKTOP_BREAKPOINT) {
 }
 
 function VideoTile({ slide, isInView, className = "" }) {
-    const iframeRef = useRef(null);
-    // Each tile owns its own mute state, so toggling one video never
-    // affects the others and the icon always reflects that video's
-    // actual state.
+    const videoRef = useRef(null);
     const [muted, setMuted] = useState(true);
 
-    // Once a video has entered view, keep it "activated" (has a src) even if
-    // it later scrolls out, so it doesn't reload and restart from 0.
-    const [activated, setActivated] = useState(isInView);
     useEffect(() => {
-        if (isInView) setActivated(true);
+        const video = videoRef.current;
+        if (!video) return;
+
+        if (isInView) {
+            video.play().catch(() => { });
+        } else {
+            video.pause();
+        }
     }, [isInView]);
 
-    // loop=1 requires playlist to be set to the same video id, otherwise
-    // YouTube plays once and stops (the "replay" icon you'd otherwise see).
-    const src = activated
-        ? `https://www.youtube.com/embed/${slide.id}?autoplay=1&mute=1&playsinline=1&enablejsapi=1&rel=0&loop=1&playlist=${slide.id}`
-        : undefined;
-
     const handleToggle = () => {
-        const nextMuted = !muted;
-        sendYouTubeCommand(iframeRef.current, nextMuted ? "mute" : "unMute");
-        setMuted(nextMuted);
+        setMuted((current) => !current);
     };
 
     return (
         <div className={`relative overflow-hidden bg-black ${className}`}>
-            {src ? (
-                <iframe
-                    ref={iframeRef}
-                    src={src}
-                    title="Client review"
-                    className="h-full w-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                />
-            ) : (
-                <div className="h-full w-full" />
-            )}
+            <video
+                ref={videoRef}
+                src={slide.src}
+                muted={muted}
+                loop
+                playsInline
+                preload="metadata"
+                className="h-full w-full object-cover"
+            />
 
             <button
                 onClick={handleToggle}
@@ -96,7 +81,6 @@ function VideoTile({ slide, isInView, className = "" }) {
         </div>
     );
 }
-
 export default function ClientReviewsCarousel() {
     const [index, setIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
@@ -105,19 +89,15 @@ export default function ClientReviewsCarousel() {
     const sectionRef = useRef(null);
     const isDesktop = useIsDesktop();
 
-    // Trigger autoplay once the carousel section scrolls into the viewport.
+    // Start playback slightly before the section is actually on screen,
+    // so by the time the user scrolls to it the video is already rolling.
     useEffect(() => {
         const node = sectionRef.current;
         if (!node) return;
 
         const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    setIsInView(true);
-                    observer.disconnect();
-                }
-            },
-            { threshold: 0.4 }
+            ([entry]) => setIsInView(entry.isIntersecting),
+            { threshold: 0, rootMargin: "400px 0px" }
         );
 
         observer.observe(node);
@@ -140,7 +120,7 @@ export default function ClientReviewsCarousel() {
 
     return (
         <section ref={sectionRef} className="overflow-hidden bg-violet-50/40">
-            <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
+            <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-24">
                 <div className="text-center">
                     <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
                         Our Clients Reviews

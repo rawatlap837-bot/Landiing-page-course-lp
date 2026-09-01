@@ -1,99 +1,66 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Volume2, VolumeX } from "lucide-react";
 
+// --- Self-hosted assets ---------------------------------------------------
+// Update these imports to match your actual filenames exactly (case-sensitive).
+import neerajVideo from "../assets/neeraj.mp4";
+import premVideo from "../assets/prem.mp4";// swap for prem's real poster
+import kishanVideo from "../assets/kishan.mp4";// swap for kishan's real poster
+import arman from "../assets/arman.mp4";// swap for arman's real poster
+
 const slides = [
-    { id: "AnbBWuTNALw" },
-    { id: "9Yr_fSmvpb8" },
-    { id: "g-MDfJ-rDno" },
-    { id: "6nqBtmQdwhs" },
+    { id: "neeraj", src: neerajVideo, },
+    { id: "prem", src: premVideo, },
+    { id: "kishan", src: kishanVideo, },
+    { id: "arman", src: arman, },
 ];
+
 const AUTO_SCROLL_MS = 4000;
-const VIDEO_ASPECT = 16 / 9;
-
-// Sends a command to a YouTube iframe via the postMessage API.
-// Requires the iframe src to include `enablejsapi=1`.
-function sendYouTubeCommand(iframe, func, args = []) {
-    if (!iframe?.contentWindow) return;
-    iframe.contentWindow.postMessage(
-        JSON.stringify({ event: "command", func, args }),
-        "https://www.youtube.com"
-    );
-}
-
-// Measures the tile and returns the iframe's pixel width/height so that a
-// fixed 16:9 video completely covers (crops into) any container shape,
-// the same way `object-fit: cover` works for <img>/<video>. This is what
-// removes YouTube's internal letterboxing on tall/portrait tiles.
-function useCoverSize(containerRef, videoAspect = VIDEO_ASPECT) {
-    const [size, setSize] = useState({ width: "100%", height: "100%" });
-
-    useEffect(() => {
-        const node = containerRef.current;
-        if (!node) return;
-
-        const update = () => {
-            const { width: cw, height: ch } = node.getBoundingClientRect();
-            if (!cw || !ch) return;
-            const containerAspect = cw / ch;
-            if (containerAspect > videoAspect) {
-                // Container is relatively wider than the video -> width-limited.
-                setSize({ width: cw, height: cw / videoAspect });
-            } else {
-                // Container is relatively taller than the video -> height-limited.
-                setSize({ width: ch * videoAspect, height: ch });
-            }
-        };
-
-        update();
-        const observer = new ResizeObserver(update);
-        observer.observe(node);
-        return () => observer.disconnect();
-    }, [containerRef, videoAspect]);
-
-    return size;
-}
 
 function VideoTile({ slide, isInView, className = "", muted, onToggleMute }) {
-    const containerRef = useRef(null);
-    const iframeRef = useRef(null);
-    const coverSize = useCoverSize(containerRef);
+    const videoRef = useRef(null);
 
-    // Once a video has entered view, keep it "activated" (has a src) even if
-    // it later scrolls out, so it doesn't reload and restart from 0.
+    // Once a video has entered view, keep it "activated" (loads + plays) even
+    // if it later scrolls out of view, so it doesn't reload/restart.
     const [activated, setActivated] = useState(isInView);
     useEffect(() => {
         if (isInView) setActivated(true);
     }, [isInView]);
 
-    // loop=1 requires playlist to be set to the same video id, otherwise
-    // YouTube plays once and stops (the "replay" icon you'd otherwise see).
-    const src = activated
-        ? `https://www.youtube.com/embed/${slide.id}?autoplay=1&mute=1&playsinline=1&enablejsapi=1&rel=0&loop=1&playlist=${slide.id}`
-        : undefined;
-
-    // Mute state is now controlled by the parent (only one tile unmuted at
-    // a time), so push it to the iframe whenever it changes.
+    // Start playback only once activated, and keep it playing.
     useEffect(() => {
-        sendYouTubeCommand(iframeRef.current, muted ? "mute" : "unMute");
+        if (!activated) return;
+        const video = videoRef.current;
+        if (!video) return;
+        // Play can reject if the browser blocks autoplay; ignore silently.
+        video.play?.().catch(() => { });
+    }, [activated]);
+
+    // Sync mute state controlled by the parent.
+    useEffect(() => {
+        if (videoRef.current) videoRef.current.muted = muted;
     }, [muted]);
 
     return (
-        <div
-            ref={containerRef}
-            className={`relative overflow-hidden bg-black ${className}`}
-        >
-            {src ? (
-                <iframe
-                    ref={iframeRef}
-                    src={src}
-                    title="Client review"
-                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-                    style={{ width: coverSize.width, height: coverSize.height }}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
+        <div className={`relative overflow-hidden bg-black ${className}`}>
+            {activated ? (
+                <video
+                    ref={videoRef}
+                    className="h-full w-full object-cover"
+                    src={slide.src}
+                    autoPlay
+                    loop
+                    muted={muted}
+                    playsInline
+                    preload="metadata"
                 />
             ) : (
-                <div className="h-full w-full" />
+                <img
+                    src={slide.poster}
+                    alt="Client review preview"
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                />
             )}
 
             <button
@@ -160,7 +127,7 @@ export default function TestimonialCarousel() {
 
     return (
         <section ref={sectionRef} className="overflow-hidden bg-violet-50/40">
-            <div className="mx-auto max-w-5xl px-4 py-3 sm:px-6 sm:py-8">
+            <div className="mx-auto max-w-5xl px-4 sm:px-6 sm:py-8">
                 <div className="text-center">
                     <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
                         Our Students Reviews
