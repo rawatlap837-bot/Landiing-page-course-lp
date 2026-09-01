@@ -1,18 +1,26 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, ArrowRight } from "lucide-react";
+import { ArrowRight, Radio, FileCheck2, MessagesSquare, Headset } from "lucide-react";
 import Button from "../Components/Button";
-import Digitalproduct from "../assets/digtalproduct.png"
-import landingpage from "../assets/landingpage.jpeg"
+import Digitalproduct from "../assets/Digital.png"
+import landingpage from "../assets/digtalproduct.png"
 import scaling from "../assets/scaling.jpeg"
 
 const stats = [
-  { value: "10M+", label: "Businesses Online" },
-  { value: "₹1K – ₹10K", label: "Per Landing Page" },
-  { value: "Growing", label: "Demand", icon: true },
+  { value: "Live Sessions", label: "No Recorded Classes", icon: Radio, live: true },
+  { value: "Proper Worksheets", label: " & Assignments Will Be Provided", icon: FileCheck2 },
+  {
+    value: "Doubt-Clearing Sessions",
+    label: "Clear your doubts",
+    icon: MessagesSquare
+  },
+
+  {
+    value: "Dedicated Support",
+    label: "Get personal guidance",
+    icon: Headset
+  },
 ];
 
-// Imagery swapped for business/landing-page-relevant scenes instead of
-// unrelated travel/fitness stock shots.
 const cards = [
   {
     img: Digitalproduct,
@@ -59,6 +67,22 @@ export default function WhyLandingPages() {
 
   return (
     <section className="overflow-hidden bg-white">
+      <style>{`
+        @keyframes statIconFloat {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-3px); }
+        }
+        .stat-icon-float {
+          animation: statIconFloat 2.4s ease-in-out infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .stat-icon-float,
+          .stat-icon-pulse,
+          .stat-live-ping {
+            animation: none !important;
+          }
+        }
+      `}</style>
       <div className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:gap-16 sm:px-6 sm:py-20 md:grid-cols-2 md:items-center">
         {/* copy */}
         <div
@@ -101,34 +125,51 @@ export default function WhyLandingPages() {
             And businesses are ready to pay for people who can build them.
           </p>
 
-          {/* stat boxes: single column with clear borders on phones,
-              3-across from `xs` up once there's room to breathe */}
           <dl className="mt-8 grid grid-cols-1 gap-3 xs:grid-cols-3 sm:mt-10">
-            {stats.map((stat, i) => (
-              <div
-                key={stat.label}
-                className={`flex items-center justify-between rounded-2xl border-2 border-violet-100 bg-white px-4 py-3.5 shadow-sm transition-all duration-500 ease-out xs:flex-col xs:items-start xs:justify-start xs:py-4 ${copyInView
-                  ? "translate-y-0 opacity-100"
-                  : "translate-y-4 opacity-0"
-                  }`}
-                style={{
-                  transitionDelay: copyInView ? `${300 + i * 100}ms` : "0ms",
-                }}
-              >
-                <dt className="flex items-center gap-1 text-lg font-bold text-slate-900 sm:text-lg">
-                  {stat.icon && (
-                    <ArrowUpRight className="h-4 w-4 shrink-0 text-violet-600" />
-                  )}
-                  <span className="leading-tight">{stat.value}</span>
-                </dt>
-                <dd className="text-xs leading-snug text-slate-500 xs:mt-1">
-                  {stat.label}
-                </dd>
-              </div>
-            ))}
+            {stats.map((stat, i) => {
+              const Icon = stat.icon;
+              return (
+                <div
+                  key={stat.label}
+                  className={`flex items-center gap-3 rounded-2xl border-2 border-violet-100 bg-white px-4 py-3.5 shadow-sm transition-all duration-500 ease-out xs:flex-col xs:items-start xs:gap-0 xs:py-4 ${copyInView
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-4 opacity-0"
+                    }`}
+                  style={{
+                    transitionDelay: copyInView ? `${300 + i * 100}ms` : "0ms",
+                  }}
+                >
+                  <span
+                    className={`relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl xs:mb-2 ${stat.live
+                      ? "bg-rose-50 text-rose-600"
+                      : "bg-violet-50 text-violet-600"
+                      }`}
+                  >
+                    {stat.live && (
+                      <span className="absolute -right-0.5 -top-0.5 flex h-2.5 w-2.5">
+                        <span className="stat-live-ping absolute inline-flex h-full w-full animate-ping rounded-full bg-rose-400 opacity-75" />
+                        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-rose-500" />
+                      </span>
+                    )}
+                    <Icon
+                      className={`h-[18px] w-[18px] ${stat.live ? "stat-icon-pulse animate-pulse" : "stat-icon-float"
+                        }`}
+                      style={!stat.live ? { animationDelay: `${i * 200}ms` } : undefined}
+                    />
+                  </span>
+                  <div>
+                    <dt className="text-lg font-bold leading-tight text-slate-900">
+                      {stat.value}
+                    </dt>
+                    <dd className="mt-0.5 text-xs leading-snug text-slate-500">
+                      {stat.label}
+                    </dd>
+                  </div>
+                </div>
+              );
+            })}
           </dl>
 
-          {/* CTA button */}
           <Button
             href="https://rzp.io/rzp/AD2PP0lT"
             size="lg"
@@ -146,14 +187,14 @@ export default function WhyLandingPages() {
         {/* stacked mockups */}
         <div
           ref={mockupRef}
-          className="relative mx-auto h-[360px] w-full max-w-sm xs:h-[400px] sm:h-[440px] sm:max-w-md md:h-[460px]"
+          className="relative mx-auto h-[420px] w-full max-w-sm xs:h-[460px] sm:h-[500px] sm:max-w-md md:h-[520px]"
         >
           {/* glow */}
           <div className="absolute inset-0 rounded-full bg-violet-200/40 blur-3xl" />
 
-          {/* large back card */}
+          {/* large back card — lowest in the stack */}
           <div
-            className={`absolute right-0 top-0 w-[76%] -rotate-2 overflow-hidden rounded-2xl bg-slate-900 shadow-2xl transition-all duration-700 ease-out hover:-translate-y-1 hover:rotate-0 sm:w-[78%] ${mockupInView
+            className={`absolute right-0 top-0 z-0 w-[68%] -rotate-2 overflow-hidden rounded-2xl bg-slate-900 shadow-2xl transition-all duration-700 ease-out hover:-translate-y-1 hover:rotate-0 sm:w-[70%] ${mockupInView
               ? "translate-x-0 opacity-100"
               : "translate-x-6 opacity-0"
               }`}
@@ -181,9 +222,11 @@ export default function WhyLandingPages() {
             </div>
           </div>
 
-          {/* bottom-left small card */}
+          {/* digital product card — middle of the stack, sits above the
+    back card and below the coaching card so overlap reads as
+    depth instead of collision */}
           <div
-            className={`absolute bottom-14 left-0 w-[56%] -rotate-3 overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-slate-100 transition-all duration-700 ease-out hover:-translate-y-1 hover:rotate-0 sm:bottom-16 sm:w-[58%] ${mockupInView
+            className={`absolute bottom-16 left-0 z-10 w-[60%] -rotate-3 overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-slate-100 transition-all duration-700 ease-out hover:-translate-y-1 hover:rotate-0 sm:bottom-20 sm:w-[60%] ${mockupInView
               ? "translate-x-0 opacity-100"
               : "-translate-x-6 opacity-0"
               }`}
@@ -192,20 +235,20 @@ export default function WhyLandingPages() {
             <img
               src={cards[1].img}
               alt="Launch your digital product"
-              className="h-20 w-full object-cover sm:h-24"
+              className="h-32 w-full object-cover sm:h-36"
             />
             <div className="p-3 sm:p-4">
               <p className="text-xs font-bold leading-tight text-slate-900 sm:text-sm">
-                Launch Your
+                You Can Launch Your
                 <br />
                 Digital Product
               </p>
             </div>
           </div>
-
-          {/* bottom-right small card */}
+          {/* coaching card — top of the stack, clearly in front with its
+              own shadow so it doesn't just merge into the card behind it */}
           <div
-            className={`absolute bottom-0 right-1 w-[50%] rotate-2 overflow-hidden rounded-2xl bg-slate-900 shadow-xl transition-all duration-700 ease-out hover:-translate-y-1 hover:rotate-0 sm:right-2 sm:w-[52%] ${mockupInView
+            className={`absolute bottom-0 right-0 z-20 w-[46%] rotate-2 overflow-hidden rounded-2xl bg-slate-900 shadow-2xl ring-4 ring-white transition-all duration-700 ease-out hover:-translate-y-1 hover:rotate-0 sm:w-[48%] ${mockupInView
               ? "translate-y-0 opacity-100"
               : "translate-y-6 opacity-0"
               }`}

@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import Button from "./Button";
 
 const columns = [
   {
@@ -134,14 +135,18 @@ export default function FinalCTAAndFooter() {
           </Reveal>
 
           <Reveal delay={320}>
-            <button
-              type="button"
+            <Button
               href="https://rzp.io/rzp/AD2PP0lT"
-              className="cta-button group mx-auto mt-8 flex items-center gap-2 rounded-full bg-gradient-to-r from-[#7C3AED] to-[#6D28D9] px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-violet-900/40 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-violet-700/50 active:translate-y-0 active:scale-[0.98]"
+              size="lg"
+              icon={ArrowRight}
+              iconPosition="right"
+              pulse
+              shine
+              fullWidth
+              className="uppercase tracking-wide mt-5 transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
             >
               Book Your Slot Now
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </button>
+            </Button>
           </Reveal>
 
           <Reveal delay={420}>

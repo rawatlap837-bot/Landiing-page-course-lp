@@ -8,6 +8,8 @@ import Testimonials from './Components/Testimonials.jsx'
 import WhatYouGetAndWhoFor from './Components/Whatyougetandwhofor.jsx'
 import JourneySections from "./Components/Journeysections.jsx"
 import AboutMentor from './Components/Aboutmentor.jsx'
+import TestimonialCarousel from './Components/Testimonialcarousel.jsx'
+import ClientTestimonial from './Components/ClientTestimonial.jsx'
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
       <Features />
       <WhyLP />
       <WhatYouWillLearn />
+      <TestimonialCarousel />
+      <ClientTestimonial />
       <AboutMentor />
       <Testimonials />
       <WhatYouGetAndWhoFor />
