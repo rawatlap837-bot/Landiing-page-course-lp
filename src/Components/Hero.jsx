@@ -121,7 +121,7 @@ export default function HeroSection() {
 
         {/* headline */}
         <h1
-          className={`mt-4 text-[2.3rem] font-bold leading-tight tracking-tight text-slate-900 xs:text-3xl sm:mt-5 sm:text-5xl md:text-6xl lg:text-7xl ${step(
+          className={`mt-4 text-[2.4rem] font-bold leading-tight tracking-tight text-slate-900 xs:text-3xl sm:mt-5 sm:text-5xl md:text-6xl lg:text-7xl ${step(
             2
           )}`}
           style={delay(160)}
