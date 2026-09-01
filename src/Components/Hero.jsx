@@ -211,7 +211,7 @@ export default function HeroSection() {
           </Button>
 
           <Button
-            href="https://wa.me/919899669649"
+            href="https://wa.me/919899669649?text=Wants%20to%20know%20more%20about%20this%20course"
             target="_blank"
             variant="emeraldOutline"
             size="lg"
