@@ -8,6 +8,11 @@ import {
 import Button from "./Button";
 import CALogo from "../assets/CA.png";
 import HeroImage from "../assets/Sohilsirlp.png";
+import AbhishekImg from "../assets/Abhishek.webp";
+import ArmanImg from "../assets/Arman.webp";
+import SamarImg from "../assets/Samar.webp";
+import SalmanImg from "../assets/Salman.webp";
+import NeerajImg from "../assets/Neeraj.webp";
 
 
 /**
@@ -116,7 +121,7 @@ export default function HeroSection() {
 
         {/* headline */}
         <h1
-          className={`mt-4 text-[2.35rem] font-bold leading-tight tracking-tight text-slate-900 xs:text-3xl sm:mt-5 sm:text-5xl md:text-6xl lg:text-7xl ${step(
+          className={`mt-4 text-[2.3rem] font-bold leading-tight tracking-tight text-slate-900 xs:text-3xl sm:mt-5 sm:text-5xl md:text-6xl lg:text-7xl ${step(
             2
           )}`}
           style={delay(160)}
@@ -145,9 +150,9 @@ export default function HeroSection() {
           style={delay(320)}
         >
           <span className="text-slate-800">
-           ( Normally </span>
+            ( Normally </span>
           <span className="text-slate-400 line-through decoration-2">
-             ₹60,000
+            ₹60,000
           </span>{" "}
           <span className="text-slate-800">
             Today Just{" "}
@@ -229,11 +234,11 @@ export default function HeroSection() {
           <div className="flex flex-col items-center gap-2 sm:flex-row sm:gap-3">
             <div className="flex -space-x-3">
               {[
-                "https://i.pravatar.cc/40?img=25",
-                "https://i.pravatar.cc/40?img=33",
-                "https://i.pravatar.cc/40?img=47",
-                "https://i.pravatar.cc/40?img=11",
-              ].map((src, i) => (
+                { src: ArmanImg, name: "Arman" },
+                { src: AbhishekImg, name: "Abhishek" },
+                { src: SamarImg, name: "Samar" },
+                { src: SalmanImg, name: "Salman" },
+              ].map(({ src, name }, i) => (
                 <img
                   key={i}
                   src={src}

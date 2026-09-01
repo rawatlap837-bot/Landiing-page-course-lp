@@ -1,9 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Radio, FileCheck2, MessagesSquare, Headset } from "lucide-react";
 import Button from "../Components/Button";
-import Digitalproduct from "../assets/Digital.png"
-import landingpage from "../assets/digtalproduct.png"
-import scaling from "../assets/scaling.jpeg"
 
 const stats = [
   { value: "Live Sessions", label: "No Recorded Classes", icon: Radio, live: true },
@@ -18,18 +15,6 @@ const stats = [
     value: "Dedicated Support",
     label: "Get personal guidance",
     icon: Headset
-  },
-];
-
-const cards = [
-  {
-    img: Digitalproduct,
-  },
-  {
-    img: landingpage,
-  },
-  {
-    img: scaling,
   },
 ];
 
@@ -63,7 +48,6 @@ function useInView(options) {
 
 export default function WhyLandingPages() {
   const [copyRef, copyInView] = useInView({ threshold: 0.25 });
-  const [mockupRef, mockupInView] = useInView({ threshold: 0.15 });
 
   return (
     <section className="overflow-hidden bg-white">
@@ -83,7 +67,7 @@ export default function WhyLandingPages() {
           }
         }
       `}</style>
-      <div className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:gap-16 sm:px-6 sm:py-20 md:grid-cols-2 md:items-center">
+      <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-20">
         {/* copy */}
         <div
           ref={copyRef}
@@ -182,91 +166,6 @@ export default function WhyLandingPages() {
           >
             Book Your Slot Now
           </Button>
-        </div>
-
-        {/* stacked mockups */}
-        <div
-          ref={mockupRef}
-          className="relative mx-auto h-[420px] w-full max-w-sm xs:h-[460px] sm:h-[500px] sm:max-w-md md:h-[520px]"
-        >
-          {/* glow */}
-          <div className="absolute inset-0 rounded-full bg-violet-200/40 blur-3xl" />
-
-          {/* large back card — lowest in the stack */}
-          <div
-            className={`absolute right-0 top-0 z-0 w-[68%] -rotate-2 overflow-hidden rounded-2xl bg-slate-900 shadow-2xl transition-all duration-700 ease-out hover:-translate-y-1 hover:rotate-0 sm:w-[70%] ${mockupInView
-              ? "translate-x-0 opacity-100"
-              : "translate-x-6 opacity-0"
-              }`}
-            style={{ transitionDelay: mockupInView ? "150ms" : "0ms" }}
-          >
-            <img
-              src={cards[0].img}
-              alt="Grow your business"
-              className="h-44 w-full object-cover opacity-80 xs:h-52 sm:h-56 md:h-64"
-            />
-            <div className="p-4 sm:p-5">
-              <p className="text-base font-bold leading-tight text-white sm:text-xl">
-                Grow Your
-                <br />
-                Business
-              </p>
-              <div className="mt-3 flex gap-2 sm:mt-4">
-                <span className="rounded-full bg-white/10 px-2.5 py-1 text-[9px] font-semibold text-white sm:px-3 sm:py-1.5 sm:text-[10px]">
-                  Book Now
-                </span>
-                <span className="rounded-full bg-white px-2.5 py-1 text-[9px] font-semibold text-slate-900 sm:px-3 sm:py-1.5 sm:text-[10px]">
-                  Explore
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* digital product card — middle of the stack, sits above the
-    back card and below the coaching card so overlap reads as
-    depth instead of collision */}
-          <div
-            className={`absolute bottom-16 left-0 z-10 w-[60%] -rotate-3 overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-slate-100 transition-all duration-700 ease-out hover:-translate-y-1 hover:rotate-0 sm:bottom-20 sm:w-[60%] ${mockupInView
-              ? "translate-x-0 opacity-100"
-              : "-translate-x-6 opacity-0"
-              }`}
-            style={{ transitionDelay: mockupInView ? "300ms" : "0ms" }}
-          >
-            <img
-              src={cards[1].img}
-              alt="Launch your digital product"
-              className="h-32 w-full object-cover sm:h-36"
-            />
-            <div className="p-3 sm:p-4">
-              <p className="text-xs font-bold leading-tight text-slate-900 sm:text-sm">
-                You Can Launch Your
-                <br />
-                Digital Product
-              </p>
-            </div>
-          </div>
-          {/* coaching card — top of the stack, clearly in front with its
-              own shadow so it doesn't just merge into the card behind it */}
-          <div
-            className={`absolute bottom-0 right-0 z-20 w-[46%] rotate-2 overflow-hidden rounded-2xl bg-slate-900 shadow-2xl ring-4 ring-white transition-all duration-700 ease-out hover:-translate-y-1 hover:rotate-0 sm:w-[48%] ${mockupInView
-              ? "translate-y-0 opacity-100"
-              : "translate-y-6 opacity-0"
-              }`}
-            style={{ transitionDelay: mockupInView ? "450ms" : "0ms" }}
-          >
-            <img
-              src={cards[2].img}
-              alt="Scale your coaching business"
-              className="h-24 w-full object-cover opacity-80 sm:h-32"
-            />
-            <div className="p-3 sm:p-4">
-              <p className="text-[10px] font-bold leading-tight text-white sm:text-xs">
-                Scale Your Coaching
-                <br />
-                Business
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </section>

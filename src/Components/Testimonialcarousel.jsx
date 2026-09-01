@@ -8,6 +8,7 @@ const slides = [
     { id: "6nqBtmQdwhs" },
 ];
 const AUTO_SCROLL_MS = 4000;
+const VIDEO_ASPECT = 16 / 9;
 
 // Sends a command to a YouTube iframe via the postMessage API.
 // Requires the iframe src to include `enablejsapi=1`.
@@ -19,12 +20,43 @@ function sendYouTubeCommand(iframe, func, args = []) {
     );
 }
 
-function VideoTile({ slide, isInView, className = "" }) {
+// Measures the tile and returns the iframe's pixel width/height so that a
+// fixed 16:9 video completely covers (crops into) any container shape,
+// the same way `object-fit: cover` works for <img>/<video>. This is what
+// removes YouTube's internal letterboxing on tall/portrait tiles.
+function useCoverSize(containerRef, videoAspect = VIDEO_ASPECT) {
+    const [size, setSize] = useState({ width: "100%", height: "100%" });
+
+    useEffect(() => {
+        const node = containerRef.current;
+        if (!node) return;
+
+        const update = () => {
+            const { width: cw, height: ch } = node.getBoundingClientRect();
+            if (!cw || !ch) return;
+            const containerAspect = cw / ch;
+            if (containerAspect > videoAspect) {
+                // Container is relatively wider than the video -> width-limited.
+                setSize({ width: cw, height: cw / videoAspect });
+            } else {
+                // Container is relatively taller than the video -> height-limited.
+                setSize({ width: ch * videoAspect, height: ch });
+            }
+        };
+
+        update();
+        const observer = new ResizeObserver(update);
+        observer.observe(node);
+        return () => observer.disconnect();
+    }, [containerRef, videoAspect]);
+
+    return size;
+}
+
+function VideoTile({ slide, isInView, className = "", muted, onToggleMute }) {
+    const containerRef = useRef(null);
     const iframeRef = useRef(null);
-    // Each tile owns its own mute state, so toggling one video never
-    // affects the others and the icon always reflects that video's
-    // actual state.
-    const [muted, setMuted] = useState(true);
+    const coverSize = useCoverSize(containerRef);
 
     // Once a video has entered view, keep it "activated" (has a src) even if
     // it later scrolls out, so it doesn't reload and restart from 0.
@@ -39,20 +71,24 @@ function VideoTile({ slide, isInView, className = "" }) {
         ? `https://www.youtube.com/embed/${slide.id}?autoplay=1&mute=1&playsinline=1&enablejsapi=1&rel=0&loop=1&playlist=${slide.id}`
         : undefined;
 
-    const handleToggle = () => {
-        const nextMuted = !muted;
-        sendYouTubeCommand(iframeRef.current, nextMuted ? "mute" : "unMute");
-        setMuted(nextMuted);
-    };
+    // Mute state is now controlled by the parent (only one tile unmuted at
+    // a time), so push it to the iframe whenever it changes.
+    useEffect(() => {
+        sendYouTubeCommand(iframeRef.current, muted ? "mute" : "unMute");
+    }, [muted]);
 
     return (
-        <div className={`relative overflow-hidden bg-black ${className}`}>
+        <div
+            ref={containerRef}
+            className={`relative overflow-hidden bg-black ${className}`}
+        >
             {src ? (
                 <iframe
                     ref={iframeRef}
                     src={src}
                     title="Client review"
-                    className="h-full w-full"
+                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                    style={{ width: coverSize.width, height: coverSize.height }}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
                 />
@@ -61,10 +97,10 @@ function VideoTile({ slide, isInView, className = "" }) {
             )}
 
             <button
-                onClick={handleToggle}
+                onClick={onToggleMute}
                 aria-label={muted ? "Unmute video" : "Mute video"}
                 aria-pressed={!muted}
-                className="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur transition hover:bg-black/80"
+                className="absolute bottom-3 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur transition hover:bg-black/80"
             >
                 {muted ? (
                     <VolumeX className="h-4 w-4" />
@@ -80,6 +116,9 @@ export default function TestimonialCarousel() {
     const [index, setIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
     const [isInView, setIsInView] = useState(false);
+    // Only one video (by id) is ever unmuted at a time, across both the
+    // desktop grid and the mobile carousel.
+    const [unmutedId, setUnmutedId] = useState(null);
 
     const sectionRef = useRef(null);
 
@@ -116,9 +155,12 @@ export default function TestimonialCarousel() {
         return () => clearInterval(timer);
     }, [isPaused]);
 
+    const makeToggleHandler = (id) => () =>
+        setUnmutedId((current) => (current === id ? null : id));
+
     return (
         <section ref={sectionRef} className="overflow-hidden bg-violet-50/40">
-            <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 sm:py-20">
+            <div className="mx-auto max-w-5xl px-4 py-3 sm:px-6 sm:py-8">
                 <div className="text-center">
                     <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
                         Our Students Reviews
@@ -140,7 +182,7 @@ export default function TestimonialCarousel() {
                     </svg>
                 </div>
 
-                {/* Desktop / tablet: show every video at once, no controls needed */}
+                {/* Desktop / tablet: show every video at once */}
                 <div className="mt-10 hidden gap-5 md:grid md:grid-cols-4">
                     {slides.map((slide) => (
                         <VideoTile
@@ -148,6 +190,8 @@ export default function TestimonialCarousel() {
                             slide={slide}
                             isInView={isInView}
                             className="aspect-square w-full rounded-3xl shadow-md"
+                            muted={unmutedId !== slide.id}
+                            onToggleMute={makeToggleHandler(slide.id)}
                         />
                     ))}
                 </div>
@@ -168,7 +212,9 @@ export default function TestimonialCarousel() {
                                     <VideoTile
                                         slide={slide}
                                         isInView={isInView}
-                                        className="aspect-[9/16] w-full rounded-3xl"
+                                        className="aspect-square w-full rounded-3xl"
+                                        muted={unmutedId !== slide.id}
+                                        onToggleMute={makeToggleHandler(slide.id)}
                                     />
                                 </div>
                             ))}
