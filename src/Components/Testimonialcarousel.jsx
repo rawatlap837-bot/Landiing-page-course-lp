@@ -1,67 +1,121 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Volume2, VolumeX } from "lucide-react";
+import Player from "@vimeo/player";
 
-// --- Self-hosted assets ---------------------------------------------------
-// Update these imports to match your actual filenames exactly (case-sensitive).
-import neerajVideo from "../assets/neeraj.mp4";
-import premVideo from "../assets/prem.mp4";// swap for prem's real poster
-import kishanVideo from "../assets/kishan.mp4";// swap for kishan's real poster
-import arman from "../assets/arman.mp4";// swap for arman's real poster
-
+// --- Vimeo-hosted videos ---------------------------------------------------
+// vimeoId is just the number from your share link, e.g.
+// https://vimeo.com/1223302710 -> "1223302710"
 const slides = [
-    { id: "neeraj", src: neerajVideo, },
-    { id: "prem", src: premVideo, },
-    { id: "kishan", src: kishanVideo, },
-    { id: "arman", src: arman, },
+    { id: "neeraj", vimeoId: "1223302710" },
+    { id: "prem", vimeoId: "1223302711" },
+    { id: "kishan", vimeoId: "1223302717" },
+    { id: "arman", vimeoId: "1223302715" },
 ];
 
 const AUTO_SCROLL_MS = 4000;
+const DESKTOP_BREAKPOINT = 768; // matches Tailwind's `md`
 
-function VideoTile({ slide, isInView, className = "", muted, onToggleMute }) {
-    const videoRef = useRef(null);
+// Tracks whether we're at/above the desktop breakpoint. Both the desktop
+// grid and mobile carousel exist in the DOM at once (CSS just hides one),
+// so we need this to know which set is actually allowed to play/unmute —
+// otherwise both copies of a video can play audio at the same time.
+function useIsDesktop(breakpointPx = DESKTOP_BREAKPOINT) {
+    const [isDesktop, setIsDesktop] = useState(
+        typeof window !== "undefined"
+            ? window.matchMedia(`(min-width: ${breakpointPx}px)`).matches
+            : false
+    );
 
-    // Once a video has entered view, keep it "activated" (loads + plays) even
-    // if it later scrolls out of view, so it doesn't reload/restart.
-    const [activated, setActivated] = useState(isInView);
     useEffect(() => {
-        if (isInView) setActivated(true);
-    }, [isInView]);
+        const mq = window.matchMedia(`(min-width: ${breakpointPx}px)`);
+        const update = () => setIsDesktop(mq.matches);
+        update();
+        mq.addEventListener("change", update);
+        return () => mq.removeEventListener("change", update);
+    }, [breakpointPx]);
 
-    // Start playback only once activated, and keep it playing.
-    useEffect(() => {
-        if (!activated) return;
-        const video = videoRef.current;
-        if (!video) return;
-        // Play can reject if the browser blocks autoplay; ignore silently.
-        video.play?.().catch(() => { });
-    }, [activated]);
+    return isDesktop;
+}
 
-    // Sync mute state controlled by the parent.
+function VideoTile({ slide, isPlaying, muted, onToggleMute, onLoopComplete, className = "" }) {
+    const containerRef = useRef(null);
+    const playerRef = useRef(null);
+    const nearEndRef = useRef(false);
+
+    // Create the Vimeo player once per slide.
     useEffect(() => {
-        if (videoRef.current) videoRef.current.muted = muted;
+        const container = containerRef.current;
+        if (!container) return;
+
+        const player = new Player(container, {
+            id: slide.vimeoId,
+            loop: true,
+            muted: true,
+            controls: false,
+            autopause: false,
+            title: false,
+            byline: false,
+            portrait: false,
+            responsive: true,
+            dnt: true,
+        });
+        playerRef.current = player;
+
+        return () => {
+            player.destroy().catch(() => { });
+            playerRef.current = null;
+        };
+    }, [slide.vimeoId]);
+
+    // Play / pause, same as the old video.play()/video.pause() logic.
+    useEffect(() => {
+        const player = playerRef.current;
+        if (!player) return;
+
+        if (isPlaying) {
+            player.play().catch(() => { });
+        } else {
+            player.pause().catch(() => { });
+        }
+    }, [isPlaying]);
+
+    // Mute / unmute, same as the old video.muted = muted logic.
+    useEffect(() => {
+        const player = playerRef.current;
+        if (!player) return;
+        player.setMuted(muted).catch(() => { });
     }, [muted]);
+
+    // Vimeo (like <video loop>) restarts internally and won't reliably fire
+    // "ended" while looping, so we watch timeupdate the same way we did for
+    // the native <video> element: arm a flag near the end, and treat a jump
+    // back near 0 as one full play-through finishing.
+    useEffect(() => {
+        const player = playerRef.current;
+        if (!player || !onLoopComplete) return;
+
+        const handleTimeUpdate = ({ seconds, duration }) => {
+            if (!duration) return;
+            const remaining = duration - seconds;
+
+            if (remaining < 0.3) {
+                nearEndRef.current = true;
+            } else if (nearEndRef.current && seconds < 0.3) {
+                nearEndRef.current = false;
+                onLoopComplete();
+            }
+        };
+
+        player.on("timeupdate", handleTimeUpdate);
+        return () => player.off("timeupdate", handleTimeUpdate);
+    }, [onLoopComplete]);
 
     return (
         <div className={`relative overflow-hidden bg-black ${className}`}>
-            {activated ? (
-                <video
-                    ref={videoRef}
-                    className="h-full w-full object-cover"
-                    src={slide.src}
-                    autoPlay
-                    loop
-                    muted={muted}
-                    playsInline
-                    preload="metadata"
-                />
-            ) : (
-                <img
-                    src={slide.poster}
-                    alt="Client review preview"
-                    className="h-full w-full object-cover"
-                    loading="lazy"
-                />
-            )}
+            <div
+                ref={containerRef}
+                className="h-full w-full [&>iframe]:h-full [&>iframe]:w-full"
+            />
 
             <button
                 onClick={onToggleMute}
@@ -86,22 +140,22 @@ export default function TestimonialCarousel() {
     // Only one video (by id) is ever unmuted at a time, across both the
     // desktop grid and the mobile carousel.
     const [unmutedId, setUnmutedId] = useState(null);
+    // True while we're waiting for an unmuted video to finish one full
+    // play-through, so the auto-scroll carousel stays put until then.
+    const [waitingForVideo, setWaitingForVideo] = useState(false);
 
     const sectionRef = useRef(null);
+    const isDesktop = useIsDesktop();
 
-    // Trigger autoplay once the carousel section scrolls into the viewport.
+    // Start playback slightly before the section is actually on screen,
+    // so by the time the user scrolls to it the video is already rolling.
     useEffect(() => {
         const node = sectionRef.current;
         if (!node) return;
 
         const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    setIsInView(true);
-                    observer.disconnect();
-                }
-            },
-            { threshold: 0.4 }
+            ([entry]) => setIsInView(entry.isIntersecting),
+            { threshold: 0, rootMargin: "400px 0px" }
         );
 
         observer.observe(node);
@@ -112,7 +166,7 @@ export default function TestimonialCarousel() {
     const next = () => setIndex((i) => (i === slides.length - 1 ? 0 : i + 1));
 
     useEffect(() => {
-        if (isPaused) return;
+        if (isPaused || waitingForVideo) return;
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
         const timer = setInterval(() => {
@@ -120,10 +174,43 @@ export default function TestimonialCarousel() {
         }, AUTO_SCROLL_MS);
 
         return () => clearInterval(timer);
-    }, [isPaused]);
+    }, [isPaused, waitingForVideo]);
+
+    // Whenever the active mobile slide changes, drop any unmuted audio so a
+    // video that's no longer showing doesn't keep playing sound.
+    useEffect(() => {
+        setUnmutedId((current) => {
+            const activeSlideId = slides[index]?.id;
+            if (current === activeSlideId) return current;
+            setWaitingForVideo(false);
+            return null;
+        });
+    }, [index]);
+
+    // Crossing the desktop/mobile breakpoint switches which tile set is
+    // actually playing, so drop any unmuted audio to avoid a stale
+    // unmute carrying over to the other set.
+    useEffect(() => {
+        setUnmutedId(null);
+        setWaitingForVideo(false);
+    }, [isDesktop]);
 
     const makeToggleHandler = (id) => () =>
-        setUnmutedId((current) => (current === id ? null : id));
+        setUnmutedId((current) => {
+            const next = current === id ? null : id;
+            setWaitingForVideo(next !== null);
+            return next;
+        });
+
+    const handleLoopComplete = (id) => () => {
+        // Only resume the carousel if this is still the video we're waiting on.
+        setUnmutedId((current) => {
+            if (current === id) {
+                setWaitingForVideo(false);
+            }
+            return current;
+        });
+    };
 
     return (
         <section ref={sectionRef} className="overflow-hidden bg-violet-50/40">
@@ -149,21 +236,23 @@ export default function TestimonialCarousel() {
                     </svg>
                 </div>
 
-                {/* Desktop / tablet: show every video at once */}
+                {/* Desktop / tablet: show every video at once, all can play */}
                 <div className="mt-10 hidden gap-5 md:grid md:grid-cols-4">
                     {slides.map((slide) => (
                         <VideoTile
                             key={`desktop-${slide.id}`}
                             slide={slide}
-                            isInView={isInView}
+                            isPlaying={isDesktop && isInView}
                             className="aspect-square w-full rounded-3xl shadow-md"
-                            muted={unmutedId !== slide.id}
+                            muted={!isDesktop || unmutedId !== slide.id}
                             onToggleMute={makeToggleHandler(slide.id)}
+                            onLoopComplete={handleLoopComplete(slide.id)}
                         />
                     ))}
                 </div>
 
-                {/* Mobile: one at a time, auto-scrolling carousel */}
+                {/* Mobile: one at a time, auto-scrolling carousel — only the
+                    currently shown slide actually plays */}
                 <div
                     className="relative mt-10 md:hidden"
                     onMouseEnter={() => setIsPaused(true)}
@@ -174,14 +263,15 @@ export default function TestimonialCarousel() {
                             className="flex transition-transform duration-500 ease-out"
                             style={{ transform: `translateX(-${index * 100}%)` }}
                         >
-                            {slides.map((slide) => (
+                            {slides.map((slide, i) => (
                                 <div key={`mobile-${slide.id}`} className="w-full shrink-0 px-1">
                                     <VideoTile
                                         slide={slide}
-                                        isInView={isInView}
+                                        isPlaying={!isDesktop && isInView && i === index}
                                         className="aspect-square w-full rounded-3xl"
-                                        muted={unmutedId !== slide.id}
+                                        muted={isDesktop || unmutedId !== slide.id}
                                         onToggleMute={makeToggleHandler(slide.id)}
+                                        onLoopComplete={handleLoopComplete(slide.id)}
                                     />
                                 </div>
                             ))}

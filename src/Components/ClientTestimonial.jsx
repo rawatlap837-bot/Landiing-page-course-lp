@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Volume2, VolumeX } from "lucide-react";
+import Player from "@vimeo/player";
 
-import testimonial1 from "../assets/testimonial 1.mp4";
-import testimonial3 from "../assets/testimonial 3.mp4";
-import testimonial4 from "../assets/testimonial 4.mp4";
-
+// --- Vimeo-hosted videos ---------------------------------------------------
+// vimeoId is just the number from your share link, e.g.
+// https://vimeo.com/1223302814 -> "1223302814"
 const slides = [
-    { id: "testimonial-1", src: testimonial1 },
-    { id: "testimonial-3", src: testimonial3 },
-    { id: "testimonial-4", src: testimonial4 },
+    { id: "testimonial-1", vimeoId: "1223302814" },
+    { id: "testimonial-3", vimeoId: "1223303000" },
+    { id: "testimonial-4", vimeoId: "1223302951" },
 ];
 
 const AUTO_SCROLL_MS = 4000;
@@ -35,39 +35,63 @@ function useIsDesktop(breakpointPx = DESKTOP_BREAKPOINT) {
     return isDesktop;
 }
 
-function VideoTile({ slide, isInView, className = "" }) {
-    const videoRef = useRef(null);
-    const [muted, setMuted] = useState(true);
+function VideoTile({ slide, isPlaying, muted, onToggleMute, className = "" }) {
+    const containerRef = useRef(null);
+    const playerRef = useRef(null);
 
+    // Create the Vimeo player once per slide.
     useEffect(() => {
-        const video = videoRef.current;
-        if (!video) return;
+        const container = containerRef.current;
+        if (!container) return;
 
-        if (isInView) {
-            video.play().catch(() => { });
+        const player = new Player(container, {
+            id: slide.vimeoId,
+            loop: true,
+            muted: true,
+            controls: false,
+            autopause: false,
+            title: false,
+            byline: false,
+            portrait: false,
+            responsive: true,
+            dnt: true,
+        });
+        playerRef.current = player;
+
+        return () => {
+            player.destroy().catch(() => { });
+            playerRef.current = null;
+        };
+    }, [slide.vimeoId]);
+
+    // Play / pause, same as the old video.play()/video.pause() logic.
+    useEffect(() => {
+        const player = playerRef.current;
+        if (!player) return;
+
+        if (isPlaying) {
+            player.play().catch(() => { });
         } else {
-            video.pause();
+            player.pause().catch(() => { });
         }
-    }, [isInView]);
+    }, [isPlaying]);
 
-    const handleToggle = () => {
-        setMuted((current) => !current);
-    };
+    // Mute / unmute, same as the old video.muted = muted logic.
+    useEffect(() => {
+        const player = playerRef.current;
+        if (!player) return;
+        player.setMuted(muted).catch(() => { });
+    }, [muted]);
 
     return (
         <div className={`relative overflow-hidden bg-black ${className}`}>
-            <video
-                ref={videoRef}
-                src={slide.src}
-                muted={muted}
-                loop
-                playsInline
-                preload="metadata"
-                className="h-full w-full object-cover"
+            <div
+                ref={containerRef}
+                className="h-full w-full [&>iframe]:h-full [&>iframe]:w-full"
             />
 
             <button
-                onClick={handleToggle}
+                onClick={onToggleMute}
                 aria-label={muted ? "Unmute video" : "Mute video"}
                 aria-pressed={!muted}
                 className="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur transition hover:bg-black/80"
@@ -85,6 +109,8 @@ export default function ClientReviewsCarousel() {
     const [index, setIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
     const [isInView, setIsInView] = useState(false);
+    // id of the single slide that's currently unmuted, or null if all muted
+    const [activeAudioId, setActiveAudioId] = useState(null);
 
     const sectionRef = useRef(null);
     const isDesktop = useIsDesktop();
@@ -117,6 +143,20 @@ export default function ClientReviewsCarousel() {
 
         return () => clearInterval(timer);
     }, [isPaused, isDesktop]);
+
+    // Whenever the active mobile slide changes, drop any unmuted audio so a
+    // video that's no longer showing doesn't keep playing sound.
+    useEffect(() => {
+        if (isDesktop) return;
+        setActiveAudioId((current) => {
+            const activeSlideId = slides[index]?.id;
+            return current === activeSlideId ? current : null;
+        });
+    }, [index, isDesktop]);
+
+    const handleToggleMute = (slideId) => {
+        setActiveAudioId((current) => (current === slideId ? null : slideId));
+    };
 
     return (
         <section ref={sectionRef} className="overflow-hidden bg-violet-50/40">
@@ -158,18 +198,28 @@ export default function ClientReviewsCarousel() {
                                     : { transform: `translateX(-${index * 100}%)` }
                             }
                         >
-                            {slides.map((slide) => (
-                                <div
-                                    key={slide.id}
-                                    className="w-full shrink-0 px-1 md:w-auto md:shrink md:px-0"
-                                >
-                                    <VideoTile
-                                        slide={slide}
-                                        isInView={isInView}
-                                        className="aspect-video w-full rounded-3xl md:shadow-md"
-                                    />
-                                </div>
-                            ))}
+                            {slides.map((slide, i) => {
+                                // Mobile: only the slide currently in view plays.
+                                // Desktop: all three tiles are visible, so all can play.
+                                const isPlaying =
+                                    isInView && (isDesktop || i === index);
+                                const muted = activeAudioId !== slide.id;
+
+                                return (
+                                    <div
+                                        key={slide.id}
+                                        className="w-full shrink-0 px-1 md:w-auto md:shrink md:px-0"
+                                    >
+                                        <VideoTile
+                                            slide={slide}
+                                            isPlaying={isPlaying}
+                                            muted={muted}
+                                            onToggleMute={() => handleToggleMute(slide.id)}
+                                            className="aspect-video w-full rounded-3xl md:shadow-md"
+                                        />
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
 
