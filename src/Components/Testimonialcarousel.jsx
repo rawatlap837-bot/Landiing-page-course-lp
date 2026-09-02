@@ -6,10 +6,10 @@ import Player from "@vimeo/player";
 // vimeoId is just the number from your share link, e.g.
 // https://vimeo.com/1223302710 -> "1223302710"
 const slides = [
+    { id: "arman", vimeoId: "1223302715" },
     { id: "neeraj", vimeoId: "1223302710" },
     { id: "prem", vimeoId: "1223302711" },
-    { id: "kishan", vimeoId: "1223302717" },
-    { id: "arman", vimeoId: "1223302715" },
+    { id: "kishan", vimeoId: "1223302717" },   
 ];
 
 const AUTO_SCROLL_MS = 4000;
