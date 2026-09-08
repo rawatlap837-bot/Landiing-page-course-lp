@@ -133,16 +133,16 @@ export default function ClientReviewsCarousel() {
     const prev = () => setIndex((i) => (i === 0 ? slides.length - 1 : i - 1));
     const next = () => setIndex((i) => (i === slides.length - 1 ? 0 : i + 1));
 
-    useEffect(() => {
-        if (isPaused || isDesktop) return;
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        useEffect(() => {
+            if (isPaused || isDesktop) return;
+            if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-        const timer = setInterval(() => {
-            setIndex((i) => (i === slides.length - 1 ? 0 : i + 1));
-        }, AUTO_SCROLL_MS);
+            const timer = setInterval(() => {
+                setIndex((i) => (i === slides.length - 1 ? 0 : i + 1));
+            }, AUTO_SCROLL_MS);
 
-        return () => clearInterval(timer);
-    }, [isPaused, isDesktop]);
+            return () => clearInterval(timer);
+        }, [isPaused, isDesktop]);
 
     // Whenever the active mobile slide changes, drop any unmuted audio so a
     // video that's no longer showing doesn't keep playing sound.

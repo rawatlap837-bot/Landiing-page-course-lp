@@ -121,14 +121,14 @@ export default function HeroSection() {
 
         {/* headline */}
         <h1
-          className={`mt-4 text-[2.4rem] font-bold leading-tight tracking-tight text-slate-900 xs:text-3xl sm:mt-5 sm:text-5xl md:text-6xl lg:text-7xl ${step(
+          className={`mt-4 text-[2.4rem] font-bold capitalize leading-tight tracking-tight text-slate-900 xs:text-3xl sm:mt-5 sm:text-5xl md:text-6xl lg:text-7xl ${step(
             2
           )}`}
           style={delay(160)}
         >
-          Learn{" "}
+          0 to ₹10 Lakh The the best starting to Your{" "}
           <span className="bg-violet-600 bg-clip-text text-transparent">
-            High-Income Digital Skill
+            High-Income Digital Career
           </span>{" "}
           in Just <span className="text-yellow-500">1 Month</span>
         </h1>
