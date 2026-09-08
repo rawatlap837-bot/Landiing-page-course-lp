@@ -126,7 +126,7 @@ export default function HeroSection() {
           )}`}
           style={delay(160)}
         >
-          <span className="block text-[1.5rem] text-violet-600 font-bold xs:text-xl sm:text-3xl md:text-4xl lg:text-5xl">
+          <span className="block text-[1.5rem] text-violet-600 font-bold underline decoration-violet-600 underline-offset-4 xs:text-xl sm:text-3xl md:text-4xl lg:text-5xl">
             0 to ₹10 Lakh
           </span>
           best starting to Your{" "}
@@ -135,9 +135,9 @@ export default function HeroSection() {
           </span>{" "}
           <br className="hidden lg:block" />
           Digital Career
-          <span className="mt-3 block text-[1.5rem] font-bold xs:text-xl sm:mt-4 sm:text-3xl md:text-4xl lg:text-5xl">
-            (in Just <span className="text-violet-600">1 Month</span>)
-          </span>
+          {/* <span className="mt-2 block text-[1.5rem] font-bold xs:text-xl sm:mt-4 sm:text-3xl md:text-4xl lg:text-5xl">
+    (in Just <span className="text-violet-600">1 Month</span>)
+  </span> */}
         </h1>
         {/* subheadline */}
         <p
