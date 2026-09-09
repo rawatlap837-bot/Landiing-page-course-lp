@@ -155,14 +155,16 @@ export default function WhyLandingPages() {
           </dl>
 
           <Button
-            href="https://rzp.io/rzp/AD2PP0lT"
             size="lg"
             icon={ArrowRight}
             iconPosition="right"
             pulse
             shine
             fullWidth
-            className="uppercase mt-5 tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
+            openForm
+            formTitle="Book Your Slot"
+            webhookUrl="https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"
+            className="mt-5 uppercase tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
           >
             Book Your Slot Now
           </Button>

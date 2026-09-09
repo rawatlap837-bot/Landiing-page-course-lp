@@ -155,7 +155,7 @@ export default function HeroSection() {
           )}`}
           style={delay(320)}
         >
-          <span className="text-slate-800">
+          {/* <span className="text-slate-800">
             ( Normally </span>
           <span className="text-slate-400 line-through decoration-2">
             ₹60,000
@@ -165,7 +165,7 @@ export default function HeroSection() {
             <span className="text-lg font-extrabold text-violet-600 sm:text-xl">
               ₹1,199)
             </span>
-          </span>
+          </span> */}
         </p>
 
         {/* image centerpiece */}
@@ -203,19 +203,21 @@ export default function HeroSection() {
           )}`}
           style={delay(420)}
         >
+
           <Button
-            href="https://rzp.io/rzp/AD2PP0lT"
             size="lg"
             icon={ArrowRight}
             iconPosition="right"
             pulse
             shine
             fullWidth
+            openForm
+            formTitle="Book Your Slot"
+            webhookUrl="https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"
             className="uppercase tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
           >
             Book Your Slot Now
           </Button>
-
           <Button
             href="https://wa.me/919899669649?text=Wants%20to%20know%20more%20about%20this%20course"
             target="_blank"

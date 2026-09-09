@@ -1,5 +1,7 @@
-import { forwardRef } from "react";
-import { Loader2 } from "lucide-react";
+import { forwardRef, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { Loader2, X } from "lucide-react";
+import LeadForm from "./LeadForm";
 
 /**
  * Dynamic Button — one component, usable anywhere in the app.
@@ -16,6 +18,12 @@ import { Loader2 } from "lucide-react";
  * <Button variant="gradient" pulse icon={ArrowRight} size="lg">Join The Program Now</Button>
  * <Button variant="gradient" shine icon={ArrowRight} size="lg">Join The Program Now</Button>
  * <Button variant="gradient" pulse shine icon={ArrowRight} size="lg">Join The Program Now</Button>
+ *
+ * <Button variant="gradient" openForm formTitle="Book Your Slot" size="lg">
+ *   Book Your Slot Now
+ * </Button>
+ *   -> clicking opens a modal containing the <LeadForm /> component
+ *      (imported from ./LeadForm). No href, no external navigation.
  *
  * Props:
  * - variant: "primary" | "secondary" | "outline" | "ghost" | "danger" | "gradient" | "emeraldOutline"  (default "primary")
@@ -34,7 +42,17 @@ import { Loader2 } from "lucide-react";
  * - loading: boolean — shows a spinner, disables the button, sets aria-busy
  * - loadingText: string — replaces children while loading (children stay if omitted)
  * - disabled: boolean
- * - href: string — if provided, renders an <a> instead of a <button>
+ * - href: string — if provided, renders an <a> instead of a <button>. No
+ *   default anymore — omit it and you get a real <button>.
+ * - openForm: boolean — when true, ignores href/as entirely and clicking
+ *   opens a modal containing <LeadForm />.                          (default false)
+ * - formTitle: string — heading shown inside the lead-form modal.  (default "Book Your Slot")
+ * - webhookUrl: string — where the lead form POSTs to (Google Apps Script
+ *   web app URL). Passed straight through to <LeadForm webhookUrl=... />.
+ *   Only relevant when openForm is true.
+ * - redirectUrl: string — page to send the user to after a successful
+ *   submit. Passed straight through to <LeadForm redirectUrl=... />. Only
+ *   relevant when openForm is true.
  * - as: override the rendered element/component entirely (e.g. react-router's Link)
  * - className: extra classes merged onto the root element (appended last, so
  *   simple overrides work, but conflicting Tailwind utilities can still lose
@@ -48,6 +66,62 @@ import { Loader2 } from "lucide-react";
  * add group yourself.
  */
 
+// ---------------------------------------------------------------------------
+// Modal that wraps <LeadForm /> when openForm is true.
+// ---------------------------------------------------------------------------
+
+function FormModal({ open, onClose, children }) {
+    const dialogRef = useRef(null);
+
+    useEffect(() => {
+        if (!open) return;
+        const onKey = (e) => e.key === "Escape" && onClose();
+        document.addEventListener("keydown", onKey);
+        return () => document.removeEventListener("keydown", onKey);
+    }, [open, onClose]);
+
+    useEffect(() => {
+        if (!open) return;
+        const prev = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = prev;
+        };
+    }, [open]);
+
+    useEffect(() => {
+        if (open) dialogRef.current?.focus();
+    }, [open]);
+
+    if (!open) return null;
+
+    return createPortal(
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
+            <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-[fadeIn_0.2s_ease-out]" />
+
+            <div
+                ref={dialogRef}
+                role="dialog"
+                aria-modal="true"
+                tabIndex={-1}
+                onClick={(e) => e.stopPropagation()}
+                className="relative w-full max-w-md animate-[fadeIn_0.25s_ease-out] outline-none"
+            >
+                <button
+                    onClick={onClose}
+                    aria-label="Close"
+                    className="absolute -top-3 -right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white text-slate-500 shadow-md transition hover:text-slate-800"
+                >
+                    <X className="h-4 w-4" strokeWidth={2} />
+                </button>
+                {children}
+            </div>
+        </div>,
+        document.body
+    );
+}
+
+// ---------------------------------------------------------------------------
 // Custom flags this component understands. Even though every one of these is
 // already destructured out of props below (so `rest` never contains them in
 // normal use), we defensively strip them again right before spreading onto a
@@ -56,6 +130,7 @@ import { Loader2 } from "lucide-react";
 // component is ever refactored and someone forgets to destructure a new
 // custom prop, or if `as` is given a plain DOM tag string that inherits
 // props from a spread object further up the tree.
+// ---------------------------------------------------------------------------
 const CUSTOM_FLAGS = [
     "variant",
     "size",
@@ -68,6 +143,10 @@ const CUSTOM_FLAGS = [
     "shine",
     "loading",
     "loadingText",
+    "openForm",
+    "formTitle",
+    "webhookUrl",
+    "redirectUrl",
 ];
 
 function stripCustomFlags(props) {
@@ -91,7 +170,11 @@ const Button = forwardRef(function Button(
         loading = false,
         loadingText,
         disabled = false,
-        href = "https://rzp.io/rzp/AD2PP0lT",
+        href,
+        openForm = false,
+        formTitle = "Book Your Slot",
+        webhookUrl,
+        redirectUrl,
         as,
         className = "",
         onClick,
@@ -101,6 +184,8 @@ const Button = forwardRef(function Button(
     },
     ref
 ) {
+    const [showForm, setShowForm] = useState(false);
+
     if (import.meta?.env?.DEV && iconOnly && !rest["aria-label"]) {
         // eslint-disable-next-line no-console
         console.warn(
@@ -108,8 +193,6 @@ const Button = forwardRef(function Button(
         );
     }
 
-    // Belt-and-suspenders: rest should already be clean since every custom
-    // flag above is destructured, but strip again in case of drift.
     const safeRest = stripCustomFlags(rest);
 
     const isDisabled = disabled || loading;
@@ -121,8 +204,6 @@ const Button = forwardRef(function Button(
         "disabled:cursor-not-allowed disabled:opacity-60 disabled:pointer-events-none " +
         "active:scale-[0.97]";
 
-    // `shine` needs the root to clip the sweeping highlight to the button's
-    // own shape (pill/rounded), so we force overflow-hidden when it's on.
     const shineClip = shine ? "overflow-hidden" : "";
 
     const shapes = {
@@ -156,7 +237,6 @@ const Button = forwardRef(function Button(
             "border-2 border-emerald-500 bg-white text-emerald-600 hover:bg-emerald-50",
     };
 
-    // Icon-right buttons get a group class so the icon can animate on hover.
     const groupClass = !iconOnly && Icon && iconPosition === "right" ? "group" : "";
 
     const classes = [
@@ -173,9 +253,6 @@ const Button = forwardRef(function Button(
         .filter(Boolean)
         .join(" ");
 
-    // Keyframes are scoped to this component and only rendered when a pulse
-    // button is on the page — mirrors the same ring effect used for the
-    // footer's "Join The Program Now" CTA, now reusable on any Button.
     const pulseStyle = pulse ? (
         <style>{`
             @keyframes btnPulseRing {
@@ -189,14 +266,6 @@ const Button = forwardRef(function Button(
         `}</style>
     ) : null;
 
-    // Continuous diagonal shine/shimmer sweep. A ::before pseudo-element
-    // (via a scoped class) carries a soft white gradient band that glides
-    // from off-screen-left to off-screen-right on a loop. Both the start and
-    // end positions sit well outside the button's bounds, so the loop
-    // restart is invisible — no jump-cut, just a smooth recurring glide.
-    // Eased with a gentle cubic-bezier (ease-in-out-ish, slightly slower
-    // start/end) instead of linear or plain ease, so the sweep feels like a
-    // soft glide rather than a mechanical wipe.
     const shineStyle = shine ? (
         <style>{`
             @keyframes btnShineSweep {
@@ -230,7 +299,6 @@ const Button = forwardRef(function Button(
         `}</style>
     ) : null;
 
-    // auto-harden target="_blank" links
     const safeRel =
         target === "_blank" ? [rel, "noopener", "noreferrer"].filter(Boolean).join(" ") : rel;
 
@@ -263,6 +331,14 @@ const Button = forwardRef(function Button(
             e.preventDefault();
             return;
         }
+        // openForm takes over the click entirely: no navigation, just open
+        // the modal that renders <LeadForm />.
+        if (openForm) {
+            e.preventDefault();
+            setShowForm(true);
+            onClick?.(e);
+            return;
+        }
         onClick?.(e);
     };
 
@@ -275,8 +351,21 @@ const Button = forwardRef(function Button(
         ...safeRest,
     };
 
-    // Custom element/component override (e.g. react-router Link)
-    if (as) {
+    const modal = openForm ? (
+        <FormModal open={showForm} onClose={() => setShowForm(false)}>
+            <LeadForm
+                title={formTitle}
+                webhookUrl={webhookUrl}
+                redirectUrl={redirectUrl}
+                onSuccess={() => setShowForm(false)}
+            />
+        </FormModal>
+    ) : null;
+
+    // Custom element/component override (e.g. react-router Link).
+    // Skipped entirely when openForm is true — a button that opens a modal
+    // has no business also being a router Link.
+    if (as && !openForm) {
         const Component = as;
         return (
             <>
@@ -289,8 +378,8 @@ const Button = forwardRef(function Button(
         );
     }
 
-    // Renders as a link when href is given
-    if (href) {
+    // Renders as a link when href is given (and openForm is off)
+    if (href && !openForm) {
         return (
             <>
                 {pulseStyle}
@@ -307,7 +396,7 @@ const Button = forwardRef(function Button(
         );
     }
 
-    // Default: a real <button>
+    // Default: a real <button> (also used whenever openForm is true)
     return (
         <>
             {pulseStyle}
@@ -315,6 +404,7 @@ const Button = forwardRef(function Button(
             <button type={rest.type ?? "button"} disabled={isDisabled} {...sharedProps}>
                 {content}
             </button>
+            {modal}
         </>
     );
 });

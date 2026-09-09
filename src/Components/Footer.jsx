@@ -136,14 +136,16 @@ export default function FinalCTAAndFooter() {
 
           <Reveal delay={320}>
             <Button
-              href="https://rzp.io/rzp/AD2PP0lT"
               size="lg"
               icon={ArrowRight}
               iconPosition="right"
               pulse
               shine
               fullWidth
-              className="uppercase tracking-wide mt-5 transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
+              openForm
+              formTitle="Book Your Slot"
+              webhookUrl="https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"
+              className="mt-5 uppercase tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
             >
               Book Your Slot Now
             </Button>
