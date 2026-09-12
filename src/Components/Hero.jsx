@@ -143,16 +143,6 @@ export default function HeroSection() {
       </nav> */}
 
       <div className="relative mx-auto max-w-6xl px-4 pt-12 pb-10 text-center sm:px-6 sm:pt-12 sm:pb-14">
-        {/* eyebrow */}
-        <span
-          className={`inline-flex items-center gap-1.5 rounded-full border border-violet-400/30 bg-violet-500/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-violet-300 sm:px-4 sm:py-1.5 sm:text-xs ${step(
-            1
-          )}`}
-          style={delay(80)}
-        >
-          Landing Page Mastery Program
-        </span>
-
         {/* headline */}
         <h1
           className={`mt-3 text-[2.2rem] font-bold capitalize leading-[1.1] tracking-tight text-white xs:text-3xl sm:mt-4 sm:text-5xl sm:leading-[1.08] md:text-6xl lg:text-7xl ${step(
@@ -231,7 +221,7 @@ export default function HeroSection() {
         </div>
         {/* enrollment deadline — now placed under the social proof card */}
         <div
-          className={`mx-auto mt-4 flex w-fit items-center justify-center gap-2 rounded-full bg-gradient-to-r from-slate-800 via-violet-500/40 to-slate-800 px-5 py-2.5 text-center shadow-sm shadow-violet-950/40 ring-1 ring-violet-400/20 sm:mt-5 sm:px-6 sm:py-3 ${step(
+          className={`mx-auto flex w-fit items-center justify-center gap-2 rounded-full bg-gradient-to-r from-slate-800 via-violet-500/40 to-slate-800 px-5 py-2.5 text-center shadow-sm shadow-violet-950/40 ring-1 ring-violet-400/20 sm:mt-5 sm:px-6 sm:py-3 ${step(
             7
           )}`}
           style={delay(620)}
@@ -314,24 +304,11 @@ export default function HeroSection() {
                 />
               ))}
             </div>
-            <p className="flex-1 text-sm font-semibold leading-snug text-slate-200">
+            <p className="flex-1 text-sm capitalize font-semibold leading-snug text-slate-200">
               Join <span className="font-bold text-white">500+ learners</span> who are
               building their <span className="font-bold text-white">digital careers</span>
             </p>
           </div>
-        </div>
-        {/* batch start — larger standalone banner, same spot the old
-            two-column batch-info row used to occupy */}
-        <div
-          className={`mx-auto mt-5 flex w-fit max-w-sm items-center justify-center gap-2 rounded-full bg-gradient-to-r from-slate-800 via-violet-500/40 to-slate-800 px-6 py-3 text-center shadow-sm shadow-violet-950/40 ring-1 ring-violet-400/20 sm:mt-6 sm:px-8 sm:py-4 ${step(
-            5
-          )}`}
-          style={delay(460)}
-        >
-          <Calendar className="h-5 w-5 shrink-0 text-violet-300 sm:h-6 sm:w-6" />
-          <span className="text-base font-semibold capitalize text-slate-200 sm:text-lg">
-            Fresh batch will starts From <span className="font-bold text-white">1 Sept</span>
-          </span>
         </div>
       </div>
     </section>
