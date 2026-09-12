@@ -17,7 +17,8 @@ import LeadForm from "./LeadForm";
  * <Button variant="gradient" icon={ArrowRight} size="lg">Join The Program Now</Button>
  * <Button variant="gradient" pulse icon={ArrowRight} size="lg">Join The Program Now</Button>
  * <Button variant="gradient" shine icon={ArrowRight} size="lg">Join The Program Now</Button>
- * <Button variant="gradient" pulse shine icon={ArrowRight} size="lg">Join The Program Now</Button>
+ * <Button variant="gradient" bounce icon={ArrowRight} size="lg">Join The Program Now</Button>
+ * <Button variant="gradient" pulse shine bounce icon={ArrowRight} size="lg">Join The Program Now</Button>
  *
  * <Button variant="gradient" openForm formTitle="Book Your Slot" size="lg">
  *   Book Your Slot Now
@@ -39,6 +40,9 @@ import LeadForm from "./LeadForm";
  *   the button surface, like a shimmer/glare effect. Respects
  *   prefers-reduced-motion (no animation if set). Combine with `pulse` for
  *   both effects at once.
+ * - bounce: boolean — adds a continuous, gentle vertical bounce (like a
+ *   "look here, click me" nudge). Respects prefers-reduced-motion (no
+ *   animation if set). Combine with `pulse` and/or `shine` for a busier CTA.
  * - loading: boolean — shows a spinner, disables the button, sets aria-busy
  * - loadingText: string — replaces children while loading (children stay if omitted)
  * - disabled: boolean
@@ -141,6 +145,7 @@ const CUSTOM_FLAGS = [
     "fullWidth",
     "pulse",
     "shine",
+    "bounce",
     "loading",
     "loadingText",
     "openForm",
@@ -167,6 +172,7 @@ const Button = forwardRef(function Button(
         fullWidth = false,
         pulse = false,
         shine = false,
+        bounce = false,
         loading = false,
         loadingText,
         disabled = false,
@@ -248,6 +254,7 @@ const Button = forwardRef(function Button(
         variants[variant] ?? variants.primary,
         fullWidth && !iconOnly ? "w-full" : "",
         pulse ? "btn-pulse-ring" : "",
+        bounce ? "btn-bounce" : "",
         className,
     ]
         .filter(Boolean)
@@ -295,6 +302,18 @@ const Button = forwardRef(function Button(
                 .btn-shine-sweep::before {
                     animation: btnShineSweep 3.2s cubic-bezier(0.45, 0, 0.2, 1) infinite;
                 }
+            }
+        `}</style>
+    ) : null;
+
+    const bounceStyle = bounce ? (
+        <style>{`
+            @keyframes btnBounce {
+                0%, 100% { transform: translateY(0); animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1); }
+                50% { transform: translateY(-22%); animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1); }
+            }
+            @media (prefers-reduced-motion: no-preference) {
+                .btn-bounce { animation: btnBounce 1.4s infinite; }
             }
         `}</style>
     ) : null;
@@ -371,6 +390,7 @@ const Button = forwardRef(function Button(
             <>
                 {pulseStyle}
                 {shineStyle}
+                {bounceStyle}
                 <Component {...sharedProps} target={target} rel={safeRel}>
                     {content}
                 </Component>
@@ -384,6 +404,7 @@ const Button = forwardRef(function Button(
             <>
                 {pulseStyle}
                 {shineStyle}
+                {bounceStyle}
                 <a
                     {...sharedProps}
                     href={isDisabled ? undefined : href}
@@ -401,6 +422,7 @@ const Button = forwardRef(function Button(
         <>
             {pulseStyle}
             {shineStyle}
+            {bounceStyle}
             <button type={rest.type ?? "button"} disabled={isDisabled} {...sharedProps}>
                 {content}
             </button>

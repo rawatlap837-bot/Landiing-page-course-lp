@@ -237,8 +237,8 @@ export default function HeroSection() {
           style={delay(620)}
         >
           <Clock className="h-4 w-4 shrink-0 text-violet-300" />
-          <span className="text-sm font-semibold text-slate-200">
-            Enrollment will closes in <span className="font-bold text-white">24 hours</span>
+          <span className="text-sm font-semibold capitalize text-slate-200">
+            Enrollment will closes in Next <span className="font-bold text-white">24 hours</span>
           </span>
         </div>
 
@@ -329,8 +329,8 @@ export default function HeroSection() {
           style={delay(460)}
         >
           <Calendar className="h-5 w-5 shrink-0 text-violet-300 sm:h-6 sm:w-6" />
-          <span className="text-base font-semibold text-slate-200 sm:text-lg">
-            Fresh batch will starts <span className="font-bold text-white">1 Sept</span>
+          <span className="text-base font-semibold capitalize text-slate-200 sm:text-lg">
+            Fresh batch will starts From <span className="font-bold text-white">1 Sept</span>
           </span>
         </div>
       </div>
