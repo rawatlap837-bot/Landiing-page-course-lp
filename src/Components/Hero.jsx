@@ -31,8 +31,17 @@ import NeerajImg from "../assets/Neeraj.webp";
  * Animations: everything above the fold fades/slides in on mount, staggered
  * so it reads top-to-bottom instead of popping in all at once. Respects
  * prefers-reduced-motion by skipping straight to the final state.
+ *
+ * Background: a faint grid-line texture sits behind all content, faded
+ * out toward the edges via a radial mask so it reads as a subtle texture
+ * merging into the existing violet gradient rather than a distinct layer.
  */
 
+const GRID_TEXTURE_STYLE = {
+  backgroundImage:
+    "linear-gradient(rgba(59,27,140,0.35) 1px, transparent 1px), linear-gradient(90deg, rgba(59,27,140,0.35) 1px, transparent 1px)",
+  backgroundSize: "44px 44px",
+};
 // One shared stagger helper: returns the classes + inline delay for a step.
 function useEntrance() {
   const [mounted, setMounted] = useState(false);
@@ -77,6 +86,14 @@ export default function HeroSection() {
         }
       `}</style>
 
+      {/* grid-line texture — sits behind everything, faded via mask so it
+          merges into the gradient instead of reading as a hard layer */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0"
+        style={GRID_TEXTURE_STYLE}
+      />
+
       {/* soft background glow — now gently breathing */}
       <div
         className="hero-glow pointer-events-none absolute -top-24 left-1/2 h-[220px] w-[90%] max-w-[1000px] -translate-x-1/2 rounded-full bg-violet-200/40 blur-3xl sm:-top-40 sm:h-[520px]"
@@ -93,7 +110,7 @@ export default function HeroSection() {
         <a
           href="/"
           className="flex min-w-0 items-center gap-2 text-sm font-bold text-slate-900 sm:text-lg"
-      >
+        >
           <img
             src={CALogo}
             alt="Creative Adhyayan"
@@ -116,7 +133,7 @@ export default function HeroSection() {
         </Button>
       </nav>
 
-      <div className="relative mx-auto max-w-5xl px-4 pt-6 pb-10 text-center sm:px-6 sm:pt-12 sm:pb-14">
+      <div className="relative mx-auto max-w-6xl px-4 pt-6 pb-10 text-center sm:px-6 sm:pt-12 sm:pb-14">
         {/* eyebrow */}
         <span
           className={`inline-flex items-center gap-1.5 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-violet-700 sm:px-4 sm:py-1.5 sm:text-xs ${step(
@@ -134,18 +151,16 @@ export default function HeroSection() {
           )}`}
           style={delay(160)}
         >
-          <span className="block text-[1.5rem] text-violet-600 font-bold underline decoration-violet-600 underline-offset-4 xs:text-xl sm:text-3xl md:text-4xl lg:text-5xl">
+          <span className="mb-1 block text-[1.5rem] font-bold text-violet-600 underline decoration-violet-600 underline-offset-4 xs:text-xl sm:mb-3 sm:text-3xl md:text-4xl lg:text-5xl">
             0 to ₹10 Lakh
           </span>
-          best starting to Your{" "}
+
+          best start to Your{" "}
           <span className="whitespace-nowrap bg-violet-600 bg-clip-text text-transparent">
             High-Income
           </span>{" "}
           <br className="hidden lg:block" />
           Digital Career
-          {/* <span className="mt-2 block text-[1.5rem] font-bold xs:text-xl sm:mt-4 sm:text-3xl md:text-4xl lg:text-5xl">
-    (in Just <span className="text-violet-600">1 Month</span>)
-  </span> */}
         </h1>
         {/* subheadline */}
         <p
@@ -226,7 +241,7 @@ export default function HeroSection() {
           >
             Book Your Slot Now
           </Button>
-          <Button
+          {/* <Button
             href="https://wa.me/919899669649?text=Wants%20to%20know%20more%20about%20this%20course"
             target="_blank"
             variant="emeraldOutline"
@@ -237,9 +252,8 @@ export default function HeroSection() {
             className="uppercase tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
           >
             Connect On WhatsApp
-          </Button>
+          </Button> */}
         </div>
-
         {/* social proof */}
         <div
           className={`mx-auto mt-5 flex w-full max-w-md flex-col items-center gap-3 rounded-3xl bg-gradient-to-r from-white via-violet-100 to-white px-4 py-4 text-center shadow-sm shadow-violet-200 ring-1 ring-violet-200 sm:mt-6 sm:w-fit sm:max-w-full sm:flex-row sm:gap-6 sm:rounded-full sm:px-6 sm:py-3 sm:text-left ${step(
@@ -247,7 +261,22 @@ export default function HeroSection() {
           )}`}
           style={delay(500)}
         >
-          <div className="flex flex-col items-center gap-2 sm:flex-row sm:gap-3">
+          <div className="order-1 flex items-center gap-1.5 border-b border-violet-100 pb-3 sm:order-none sm:border-b-0 sm:border-l sm:pb-0 sm:pl-6">
+            <div className="flex text-amber-400">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star
+                  key={i}
+                  className={`h-4 w-4 fill-current ${step(7)}`}
+                  style={delay(560 + i * 60)}
+                />
+              ))}
+            </div>
+            <span className="text-sm font-semibold text-slate-700">
+              4.9/5 Rating
+            </span>
+          </div>
+
+          <div className="order-2 flex flex-col items-center gap-2 sm:order-none sm:flex-row sm:gap-3">
             <div className="flex -space-x-3">
               {[
                 { src: ArmanImg, name: "Arman" },
@@ -266,21 +295,6 @@ export default function HeroSection() {
             <p className="text-sm font-semibold leading-snug text-slate-800">
               Join 500+ learners who are building their digital careers
             </p>
-          </div>
-
-          <div className="flex items-center gap-1.5 border-t border-violet-100 pt-3 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
-            <div className="flex text-amber-400">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star
-                  key={i}
-                  className={`h-4 w-4 fill-current ${step(7)}`}
-                  style={delay(560 + i * 60)}
-                />
-              ))}
-            </div>
-            <span className="text-sm font-semibold text-slate-700">
-              4.9/5 Rating
-            </span>
           </div>
         </div>
       </div>
