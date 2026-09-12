@@ -4,6 +4,8 @@ import {
   MessageCircle,
   Play,
   Star,
+  Calendar,
+  Clock,
 } from "lucide-react";
 import Button from "./Button";
 import CALogo from "../assets/CA.png";
@@ -11,7 +13,6 @@ import HeroImage from "../assets/Sohilsirlp.png";
 import AbhishekImg from "../assets/Abhishek.webp";
 import ArmanImg from "../assets/Arman.webp";
 import SamarImg from "../assets/Samar.webp";
-import SalmanImg from "../assets/Salman.webp";
 import NeerajImg from "../assets/Neeraj.webp";
 
 
@@ -37,6 +38,11 @@ import NeerajImg from "../assets/Neeraj.webp";
  * (tighter, denser lines) and opens up to the original spacing from
  * sm: upward — set via a responsive bg-[length] utility rather than a
  * fixed inline size, so it can vary per breakpoint.
+ *
+ * Batch info: the "fresh batch starts" message is a larger standalone
+ * banner right under the main image (same spot the two-column batch-info
+ * row used to occupy). The "enrollment closes in" message now sits below
+ * the social-proof card instead, as its own smaller pill.
  */
 
 const GRID_TEXTURE_STYLE = {
@@ -110,7 +116,7 @@ export default function HeroSection() {
         )}`}
         style={delay(0)}
       >
-        <a
+        
           href="/"
           className="flex min-w-0 items-center gap-2 text-sm font-bold text-white sm:text-lg"
         >
@@ -169,7 +175,7 @@ export default function HeroSection() {
         </h1>
         {/* subheadline */}
         <p
-          className={`mx-auto mt-3 max-w-2xl text-[15px] font-semibold text-slate-200 sm:mt-4 capitalize sm:text-lg ${step(
+          className={`mx-auto mt-3 max-w-2xl text-[15px] font-semibold text-white sm:mt-4 capitalize sm:text-lg ${step(
             3
           )}`}
           style={delay(240)}
@@ -222,6 +228,18 @@ export default function HeroSection() {
               </span>
             </div>
           </div>
+        </div>
+        {/* enrollment deadline — now placed under the social proof card */}
+        <div
+          className={`mx-auto mt-4 flex w-fit items-center justify-center gap-2 rounded-full bg-gradient-to-r from-slate-800 via-violet-500/40 to-slate-800 px-5 py-2.5 text-center shadow-sm shadow-violet-950/40 ring-1 ring-violet-400/20 sm:mt-5 sm:px-6 sm:py-3 ${step(
+            7
+          )}`}
+          style={delay(620)}
+        >
+          <Clock className="h-4 w-4 shrink-0 text-violet-300" />
+          <span className="text-sm font-semibold text-slate-200">
+            Enrollment will closes in <span className="font-bold text-white">24 hours</span>
+          </span>
         </div>
 
         {/* CTAs */}
@@ -287,7 +305,6 @@ export default function HeroSection() {
                 { src: ArmanImg, name: "Arman" },
                 { src: AbhishekImg, name: "Abhishek" },
                 { src: SamarImg, name: "Samar" },
-                { src: SalmanImg, name: "Salman" },
               ].map(({ src, name }, i) => (
                 <img
                   key={i}
@@ -302,6 +319,19 @@ export default function HeroSection() {
               building their <span className="font-bold text-white">digital careers</span>
             </p>
           </div>
+        </div>
+        {/* batch start — larger standalone banner, same spot the old
+            two-column batch-info row used to occupy */}
+        <div
+          className={`mx-auto mt-5 flex w-fit max-w-sm items-center justify-center gap-2 rounded-full bg-gradient-to-r from-slate-800 via-violet-500/40 to-slate-800 px-6 py-3 text-center shadow-sm shadow-violet-950/40 ring-1 ring-violet-400/20 sm:mt-6 sm:px-8 sm:py-4 ${step(
+            5
+          )}`}
+          style={delay(460)}
+        >
+          <Calendar className="h-5 w-5 shrink-0 text-violet-300 sm:h-6 sm:w-6" />
+          <span className="text-base font-semibold text-slate-200 sm:text-lg">
+            Fresh batch will starts <span className="font-bold text-white">1 Sept</span>
+          </span>
         </div>
       </div>
     </section>
