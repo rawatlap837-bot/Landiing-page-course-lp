@@ -149,7 +149,7 @@ export default function HeroSection() {
 
         {/* headline */}
         <h1
-          className={`mt-3 text-[2.4rem] font-bold capitalize leading-[1.1] tracking-tight text-white xs:text-3xl sm:mt-4 sm:text-5xl sm:leading-[1.08] md:text-6xl lg:text-7xl ${step(
+          className={`mt-3 text-[2.3rem] font-bold capitalize leading-[1.1] tracking-tight text-white xs:text-3xl sm:mt-4 sm:text-5xl sm:leading-[1.08] md:text-6xl lg:text-7xl ${step(
             2
           )}`}
           style={delay(160)}
@@ -158,10 +158,10 @@ export default function HeroSection() {
             From 0 to ₹10 Lakh
           </span>
 
-          The best <span className="whitespace-nowrap bg-violet-300 bg-clip-text text-transparent">
-             Programme 
+          The best <span className="whitespace-nowrap text bg-violet-300 bg-clip-text text-transparent">
+            Programme
           </span> to start Your High{" "}
-          <span className="whitespace-nowrap bg-violet-300 bg-clip-text text-transparent">
+          <span className="whitespace-nowrap text bg-violet-300 bg-clip-text text-transparent">
             Income
           </span>{" "}
           <br className="hidden lg:block" />
@@ -169,7 +169,7 @@ export default function HeroSection() {
         </h1>
         {/* subheadline */}
         <p
-          className={`mx-auto mt-3 max-w-2xl text-[15px] font-semibold text-slate-300 sm:mt-4 capitalize sm:text-lg ${step(
+          className={`mx-auto mt-3 max-w-2xl text-[15px] font-semibold text-slate-200 sm:mt-4 capitalize sm:text-lg ${step(
             3
           )}`}
           style={delay(240)}
