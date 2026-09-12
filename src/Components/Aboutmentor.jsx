@@ -57,70 +57,72 @@ export default function AboutMentor() {
                     </svg>
                 </div>
 
-                <div className="mt-8 grid gap-10 sm:mt-10 sm:grid-cols-2 sm:items-center sm:gap-14">
-                    {/* photo + floating badges */}
-                    <div
-                        ref={photoRef}
-                        className={`relative mx-auto w-full max-w-[22rem] transition-all duration-700 ease-out sm:max-w-sm ${photoInView
-                            ? "translate-x-0 opacity-100"
-                            : "-translate-x-6 opacity-0"
-                            }`}
-                    >
-                        <div className="absolute inset-0 -z-10 rounded-[2rem] bg-gradient-to-br from-[#EDE7FB] to-[#E0D6FA]" />
-                        <img
-                            src={MentorPhoto}
-                            alt="Sohil Alvi — Founder, Digital Marketer, Agency Owner"
-                            className="h-[340px] w-full rounded-[2rem] object-cover object-top shadow-[0_20px_45px_rgba(76,29,149,0.18)] xs:h-[380px] sm:h-[420px]"
-                        />
-                        {/* quote accent */}
-                        <span className="absolute -bottom-4 -left-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#1C1533] text-white shadow-lg sm:-left-5">
-                            <Quote className="h-5 w-5" strokeWidth={1.75} />
-                        </span>
-                    </div>
-
-                    {/* copy */}
-                    <div
-                        ref={copyRef}
-                        className={`transition-all duration-700 ease-out ${copyInView
-                            ? "translate-x-0 opacity-100"
-                            : "translate-x-6 opacity-0"
-                            }`}
-                    >
-                        <h2 className="text-[1.75rem] font-extrabold leading-tight tracking-tight text-[#1C1533] xs:text-3xl sm:text-4xl">
-                            Learn From Someone Who{" "}
-                            <span className="text-[#6D28D9]">Built It In The Real World.</span>
-                        </h2>
-
-                        <p className="mt-5 text-[35px] font-bold text-[#4b05bb]">
-                            Sohil Alvi
-                        </p>
-                        <p className="text-sm font-semibold text-[#6D28D9]">
-                            Founder • Digital Marketer • Agency Owner • Entrepreneur
-                        </p>
-
-                        <p className="mt-5 text-sm leading-relaxed text-[#6B6578] sm:text-base">
-                            With 4+ years of experience in digital marketing and
-                            hands-on experience working with businesses and clients,
-                            Sohil has learned what actually works beyond just theory.
-                        </p>
-
-                        <p className="mt-4 text-sm leading-relaxed text-[#6B6578] sm:text-base">
-                            Through this programme, he's bringing that practical
-                            experience into a step-by-step system designed to help you
-                            master landing page creation and turn the skill into a
-                            professional service.
-                        </p>
-
-                        <div className="mt-8 flex items-center gap-1">
-                            {Array.from({ length: 5 }).map((_, i) => (
-                                <Star
-                                    key={i}
-                                    className="h-4 w-4 fill-amber-400 text-amber-400"
-                                />
-                            ))}
-                            <span className="ml-2 text-sm font-semibold text-[#1C1533]">
-                                Rated 4.9/5 by past students
+                <div className="mt-8 rounded-[2.5rem] border border-[#E4DEF7] bg-white p-5 shadow-[0_20px_60px_rgba(76,29,149,0.08)] sm:mt-10 sm:p-8">
+                    <div className="grid gap-10 sm:grid-cols-2 sm:items-center sm:gap-14">
+                        {/* photo + floating badges */}
+                        <div
+                            ref={photoRef}
+                            className={`relative mx-auto w-full max-w-[22rem] transition-all duration-700 ease-out sm:max-w-sm ${photoInView
+                                ? "translate-x-0 opacity-100"
+                                : "-translate-x-6 opacity-0"
+                                }`}
+                        >
+                            <div className="absolute inset-0 -z-10 rounded-[2rem] bg-gradient-to-br from-[#EDE7FB] to-[#E0D6FA]" />
+                            <img
+                                src={MentorPhoto}
+                                alt="Sohil Alvi — Founder, Digital Marketer, Agency Owner"
+                                className="h-[340px] w-full rounded-[2rem] border-2 border-white object-cover object-top shadow-[0_20px_45px_rgba(76,29,149,0.18)] ring-1 ring-[#D9CDF5] xs:h-[380px] sm:h-[420px]"
+                            />
+                            {/* quote accent */}
+                            <span className="absolute -bottom-4 -left-3 flex h-11 w-11 items-center justify-center rounded-2xl border-2 border-white bg-[#1C1533] text-white shadow-lg sm:-left-5">
+                                <Quote className="h-5 w-5" strokeWidth={1.75} />
                             </span>
+                        </div>
+
+                        {/* copy */}
+                        <div
+                            ref={copyRef}
+                            className={`transition-all duration-700 ease-out ${copyInView
+                                ? "translate-x-0 opacity-100"
+                                : "translate-x-6 opacity-0"
+                                }`}
+                        >
+                            <h2 className="text-[1.75rem] font-extrabold leading-tight tracking-tight text-[#1C1533] xs:text-3xl sm:text-4xl">
+                                Learn From Someone Who{" "}
+                                <span className="text-[#6D28D9]">Built It In The Real World.</span>
+                            </h2>
+
+                            <p className="mt-5 text-[35px] font-bold text-[#4b05bb]">
+                                Sohil Alvi
+                            </p>
+                            <p className="text-sm font-semibold text-[#6D28D9]">
+                                Founder • Digital Marketer • Agency Owner • Entrepreneur
+                            </p>
+
+                            <p className="mt-5 text-sm leading-relaxed text-[#6B6578] sm:text-base">
+                                With 4+ years of experience in digital marketing and
+                                hands-on experience working with businesses and clients,
+                                Sohil has learned what actually works beyond just theory.
+                            </p>
+
+                            <p className="mt-4 text-sm leading-relaxed text-[#6B6578] sm:text-base">
+                                Through this programme, he's bringing that practical
+                                experience into a step-by-step system designed to help you
+                                master landing page creation and turn the skill into a
+                                professional service.
+                            </p>
+
+                            <div className="mt-8 flex items-center gap-1 border-t border-[#EDE7FB] pt-5">
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                    <Star
+                                        key={i}
+                                        className="h-4 w-4 fill-amber-400 text-amber-400"
+                                    />
+                                ))}
+                                <span className="ml-2 text-sm font-semibold text-[#1C1533]">
+                                    Rated 4.9/5 by past students
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>

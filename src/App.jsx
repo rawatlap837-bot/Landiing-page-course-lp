@@ -15,10 +15,10 @@ function App() {
   return (
     <>
       <Hero />
-      <ClientTestimonial />
-      <Features />
+      <ClientTestimonial /> 
       <WhyLP />
       <WhatYouWillLearn />
+      <Features />
       <TestimonialCarousel />
       <AboutMentor />
       <Testimonials />

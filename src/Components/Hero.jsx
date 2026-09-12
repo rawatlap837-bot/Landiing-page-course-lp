@@ -149,7 +149,7 @@ export default function HeroSection() {
 
         {/* headline */}
         <h1
-          className={`mt-3 text-[2.3rem] font-bold capitalize leading-[1.1] tracking-tight text-white xs:text-3xl sm:mt-4 sm:text-5xl sm:leading-[1.08] md:text-6xl lg:text-7xl ${step(
+          className={`mt-3 text-[2.2rem] font-bold capitalize leading-[1.1] tracking-tight text-white xs:text-3xl sm:mt-4 sm:text-5xl sm:leading-[1.08] md:text-6xl lg:text-7xl ${step(
             2
           )}`}
           style={delay(160)}
@@ -266,7 +266,7 @@ export default function HeroSection() {
           )}`}
           style={delay(500)}
         >
-          <div className="order-1 flex items-center gap-1.5 border-b border-violet-400/20 pb-3 sm:order-none sm:border-b-0 sm:border-l sm:pb-0 sm:pl-6">
+          <div className="order-1 flex items-center gap-1.5 border-b border-violet-400/20 pb-1 sm:order-none sm:border-b-0 sm:border-l sm:pb-0 sm:pl-6">
             <div className="flex text-amber-400">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
@@ -281,7 +281,7 @@ export default function HeroSection() {
             </span>
           </div>
 
-          <div className="order-2 flex w-full items-center gap-3 text-left">
+          <div className="order-2 flex w-full items-center gap-2 text-left">
             <div className="flex shrink-0 -space-x-3">
               {[
                 { src: ArmanImg, name: "Arman" },

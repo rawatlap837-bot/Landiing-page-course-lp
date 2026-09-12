@@ -214,9 +214,9 @@ export default function TestimonialCarousel() {
 
     return (
         <section ref={sectionRef} className="overflow-hidden bg-violet-50/40">
-            <div className="mx-auto max-w-5xl px-4 sm:px-6 sm:py-8">
+            <div className="mx-auto max-w-5xl px-4 sm:px-6 sm:py-21">
                 <div className="text-center">
-                    <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
+                    <h2 className="text-3xl mt-5 font-extrabold text-slate-900 sm:text-4xl">
                         Our Students Reviews
                     </h2>
                     <svg

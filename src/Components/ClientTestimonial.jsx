@@ -163,10 +163,10 @@ export default function ClientReviewsCarousel() {
             <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-24">
                 <div className="text-center">
                     <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
-                        Our Clients Reviews
+                        Our Landing Page Clients Reviews
                     </h2>
                     <svg
-                        className="mx-auto mt-2"
+                        className="mx-auto "
                         width="140"
                         height="10"
                         viewBox="0 0 160 8"
