@@ -90,19 +90,27 @@ export default function HeroSection() {
         )}`}
         style={delay(0)}
       >
-        <a href="https://rzp.io/rzp/AD2PP0lT" className="flex min-w-0 items-center gap-2 text-sm font-bold text-slate-900 sm:text-lg">
+        <a
+          href="/"
+          className="flex min-w-0 items-center gap-2 text-sm font-bold text-slate-900 sm:text-lg"
+      >
           <img
             src={CALogo}
             alt="Creative Adhyayan"
             className="h-8 w-auto shrink-0 object-contain transition-transform duration-300 hover:rotate-12 sm:h-12"
           />
         </a>
+
         <Button
-          href="https://rzp.io/rzp/AD2PP0lT"
           size="md"
+          icon={ArrowRight}
           iconPosition="right"
           pulse
-          className="shrink-0 px-4 py-2 text-xs transition-transform duration-300 hover:-translate-y-0.5 sm:px-6 sm:py-3 sm:text-base"
+          shine
+          openForm
+          formTitle="Book Your Slot"
+          webhookUrl="https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"
+          className="shrink-0 uppercase tracking-wide px-4 py-2 text-xs transition-transform duration-300 hover:-translate-y-0.5 sm:px-6 sm:py-3 sm:text-base"
         >
           Book Your Slot
         </Button>
