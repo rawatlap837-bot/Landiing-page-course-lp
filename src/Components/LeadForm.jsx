@@ -16,7 +16,7 @@ const WHATSAPP_NUMBER = "919910232927" // +91 98996 69649
 // the message ready to send, so the person still needs to hit send on
 // that tab themselves.
 function buildWhatsAppUrl({ name, phone, email }) {
-    const text = `New lead from the landing page:%0A%0AName: ${name}%0APhone: ${phone}%0AEmail: ${email}`
+    const text = `Hi, I’m interested in the Landing Page Course. I’d like to know more about it.:%0A%0AName: ${name}%0APhone: ${phone}%0AEmail: ${email}`
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`
 }
 
