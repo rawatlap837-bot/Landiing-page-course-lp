@@ -3,9 +3,6 @@ import { useState } from "react"
 // Paste your deployed Google Apps Script "Web app URL" here (ends in /exec).
 const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwTdDImgnV8cQ2jEorbvMJmaI2Nq-874ccngJxB0IAyVisohhxfWfFxDg4tBD6a86GC/exec"
 
-// Where to send the person right after a successful submit.
-const REDIRECT_URL = "https://thankyou.sohilalvi.in/"
-
 // The business WhatsApp number that should receive each lead, in full
 // international format with no "+", spaces, or leading zeros
 // (e.g. country code 91 + 10-digit number for India).
@@ -22,7 +19,7 @@ function buildWhatsAppUrl({ name, phone, email }) {
 
 export default function LeadForm() {
     const [form, setForm] = useState({ name: "", phone: "", email: "" })
-    const [status, setStatus] = useState("idle") // idle | submitting | error
+    const [status, setStatus] = useState("idle") // idle | submitting | error | success
 
     function handleChange(e) {
         setForm({ ...form, [e.target.name]: e.target.value })
@@ -58,15 +55,25 @@ export default function LeadForm() {
             })
 
             // Open a WhatsApp tab pre-filled with the lead details, addressed
-            // to the business number above. Opened before the redirect so the
-            // browser doesn't block it as a delayed popup.
+            // to the business number above.
             window.open(buildWhatsAppUrl({ name, phone, email }), "_blank")
 
-            window.location.href = REDIRECT_URL
+            setStatus("success")
         } catch (err) {
             console.error("Form submit failed:", err)
             setStatus("error")
         }
+    }
+
+    if (status === "success") {
+        return (
+            <div className="mx-auto flex max-w-md flex-col items-center gap-2 rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+                <h3 className="text-xl font-bold text-slate-900">Thanks, {form.name.split(" ")[0]}!</h3>
+                <p className="text-sm text-slate-500">
+                    We've got your details and opened WhatsApp so you can send us a message directly. We'll reach out shortly to confirm your slot.
+                </p>
+            </div>
+        )
     }
 
     return (
