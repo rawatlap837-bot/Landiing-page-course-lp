@@ -6,6 +6,20 @@ const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwTdDImgnV8cQ2jEorb
 // Where to send the person right after a successful submit.
 const REDIRECT_URL = "https://thankyou.sohilalvi.in/"
 
+// The business WhatsApp number that should receive each lead, in full
+// international format with no "+", spaces, or leading zeros
+// (e.g. country code 91 + 10-digit number for India).
+const WHATSAPP_NUMBER = "919899669649" // +91 98996 69649
+
+// Builds a wa.me link pre-filled with the lead's details. There's no API
+// key or backend involved — wa.me just opens WhatsApp (web or app) with
+// the message ready to send, so the person still needs to hit send on
+// that tab themselves.
+function buildWhatsAppUrl({ name, phone, email }) {
+    const text = `New lead from the landing page:%0A%0AName: ${name}%0APhone: ${phone}%0AEmail: ${email}`
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`
+}
+
 export default function LeadForm() {
     const [form, setForm] = useState({ name: "", phone: "", email: "" })
     const [status, setStatus] = useState("idle") // idle | submitting | error
@@ -24,6 +38,10 @@ export default function LeadForm() {
 
         setStatus("submitting")
 
+        const name = form.name.trim()
+        const phone = form.phone.trim()
+        const email = form.email.trim()
+
         try {
             // no-cors: Apps Script doesn't send back readable CORS headers, but
             // the request still goes through and the row still gets added.
@@ -32,12 +50,17 @@ export default function LeadForm() {
                 mode: "no-cors",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: new URLSearchParams({
-                    name: form.name.trim(),
-                    phone: form.phone.trim(),
-                    email: form.email.trim(),
+                    name,
+                    phone,
+                    email,
                     timestamp: new Date().toISOString(),
                 }),
             })
+
+            // Open a WhatsApp tab pre-filled with the lead details, addressed
+            // to the business number above. Opened before the redirect so the
+            // browser doesn't block it as a delayed popup.
+            window.open(buildWhatsAppUrl({ name, phone, email }), "_blank")
 
             window.location.href = REDIRECT_URL
         } catch (err) {

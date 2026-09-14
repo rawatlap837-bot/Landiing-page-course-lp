@@ -42,13 +42,15 @@ import NeerajImg from "../assets/Neeraj.webp";
  * sm: upward — set via a responsive bg-[length] utility rather than a
  * fixed inline size, so it can vary per breakpoint.
  *
- * Video: the centerpiece is now a real embedded Vimeo player (ported over
- * from the other hero layout) instead of a static image with a play badge.
- * Tap/click anywhere on the frame toggles play/pause, there's a
- * click-or-drag progress bar, a small control row (play/pause, time,
- * mute), and a replay screen once it ends. Colors were switched from that
- * layout's gold accent to this page's violet accent so it matches the
- * grid glow, CTA, and stars above.
+ * Video: the centerpiece is a real embedded Vimeo player. It now
+ * autoplays muted on mount. Tap/click anywhere on the frame toggles
+ * play/pause (this is the only way to play/pause — the dedicated
+ * play/pause button was removed from the control row). There's a
+ * click-or-drag progress bar that dims down while the video is playing
+ * (so it doesn't compete with the content) and returns to full opacity
+ * on hover/scrub or once paused, a mute button (enlarged, since it's now
+ * the only button in the control row), and a replay screen once the
+ * video ends.
  *
  * Batch info: the "fresh batch starts" message is a larger standalone
  * banner right under the main video (same spot the two-column batch-info
@@ -94,9 +96,9 @@ function formatTime(seconds = 0) {
 
 /**
  * Embedded Vimeo player with tap-to-toggle, a draggable progress bar, a
- * small control row, and a replay screen — ported from the other hero
- * layout with its gold accent swapped for this page's violet accent.
- * Replace the vimeo video id in the iframe src with your own.
+ * mute control, and a replay screen — recolored to this page's violet
+ * accent. Autoplays muted on mount; the only way to play/pause is by
+ * tapping/clicking anywhere on the video frame.
  */
 function HeroVideo() {
   const iframeRef = useRef(null);
@@ -110,6 +112,9 @@ function HeroVideo() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isScrubbing, setIsScrubbing] = useState(false);
+  // Whether the progress bar is currently being hovered/touched — keeps it
+  // at full opacity even while playing so it stays usable.
+  const [isProgressHovered, setIsProgressHovered] = useState(false);
   // Which icon (play/pause) to briefly flash in the center after a tap-to-toggle
   const [feedbackIcon, setFeedbackIcon] = useState(null);
 
@@ -148,6 +153,11 @@ function HeroVideo() {
       });
 
       setReady(true);
+
+      // Autoplay muted on mount (browsers allow muted autoplay). The
+      // iframe src also carries autoplay=1 as a fallback for when the
+      // Vimeo API script loads slightly late.
+      player.play().catch(() => {});
     }
 
     if (window.Vimeo && window.Vimeo.Player) {
@@ -242,6 +252,7 @@ function HeroVideo() {
     if (!ready || !duration) return;
     e.stopPropagation();
     setIsScrubbing(true);
+    setIsProgressHovered(true);
     seekToClientX(e.clientX);
 
     const handleMove = (moveEvent) => {
@@ -250,6 +261,7 @@ function HeroVideo() {
     const handleUp = (upEvent) => {
       seekToClientX(upEvent.clientX);
       setIsScrubbing(false);
+      setIsProgressHovered(false);
       window.removeEventListener("pointermove", handleMove);
       window.removeEventListener("pointerup", handleUp);
     };
@@ -258,13 +270,16 @@ function HeroVideo() {
   };
 
   const progressPercent = duration ? Math.min((currentTime / duration) * 100, 100) : 0;
+  // Dim the progress bar a touch while playing so it doesn't compete with
+  // the video; bring it back to full strength on hover/scrub or once paused.
+  const progressBarVisible = !isPlaying || isScrubbing || isProgressHovered;
 
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-violet-400/20 bg-slate-950 shadow-xl shadow-violet-950/60 transition-shadow duration-500 hover:shadow-2xl hover:shadow-violet-900/70 sm:rounded-3xl sm:shadow-2xl">
       <div className="relative aspect-video w-full">
         <iframe
           ref={iframeRef}
-          src="https://player.vimeo.com/video/1226211600?controls=0&muted=1&autopause=0"
+          src="https://player.vimeo.com/video/1226211600?controls=0&muted=1&autoplay=1&autopause=0"
           className="absolute inset-0 h-full w-full"
           style={{ border: 0 }}
           title="Watch the message"
@@ -325,12 +340,12 @@ function HeroVideo() {
               type="button"
               onClick={toggleMute}
               aria-label={isMuted ? "Unmute video" : "Mute video"}
-              className="absolute bottom-4 right-4 flex h-11 w-11 items-center justify-center rounded-full bg-slate-900/70 text-white ring-1 ring-violet-400/20 backdrop-blur transition hover:bg-slate-900/90"
+              className="absolute bottom-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-slate-900/70 text-white ring-1 ring-violet-400/20 backdrop-blur transition hover:bg-slate-900/90"
             >
               {isMuted ? (
-                <VolumeX className="h-5 w-5" strokeWidth={2} />
+                <VolumeX className="h-6 w-6" strokeWidth={2} />
               ) : (
-                <Volume2 className="h-5 w-5" strokeWidth={2} />
+                <Volume2 className="h-6 w-6" strokeWidth={2} />
               )}
             </button>
           </div>
@@ -343,16 +358,21 @@ function HeroVideo() {
 
             {/* Progress bar — click or drag to seek. Sits above the
                 tap-to-toggle layer (z-20 vs z-10) so scrubbing never also
-                toggles play/pause. */}
+                toggles play/pause. Dims while playing and unhovered, and
+                comes back to full opacity on hover/scrub or while paused. */}
             <div
               ref={progressBarRef}
               onPointerDown={handleProgressPointerDown}
+              onPointerEnter={() => setIsProgressHovered(true)}
+              onPointerLeave={() => setIsProgressHovered(false)}
               role="slider"
               aria-label="Video progress"
               aria-valuemin={0}
               aria-valuemax={Math.floor(duration) || 0}
               aria-valuenow={Math.floor(currentTime)}
-              className="absolute inset-x-0 bottom-9 z-20 flex h-5 cursor-pointer touch-none items-center px-3 sm:bottom-11 sm:px-4"
+              className={`absolute inset-x-0 bottom-9 z-20 flex h-5 cursor-pointer touch-none items-center px-3 transition-opacity duration-300 sm:bottom-11 sm:px-4 ${
+                progressBarVisible ? "opacity-100" : "opacity-40"
+              }`}
             >
               <div className="relative h-1.5 w-full rounded-full bg-white/25 sm:h-2">
                 <div
@@ -367,40 +387,25 @@ function HeroVideo() {
               </div>
             </div>
 
-            {/* Control row — small, consistent icon buttons at every
-                breakpoint. Also z-20 so these stay independently clickable
-                above the tap-to-toggle layer. */}
+            {/* Control row — play/pause is handled by tapping the video
+                itself, so the only button here is mute (enlarged since
+                it's now the sole control), alongside the time readout. */}
             <div className="absolute inset-x-0 bottom-0 z-20 flex items-center justify-between gap-2 px-3 py-2 sm:px-3.5 sm:py-2.5">
-              <div className="flex min-w-0 items-center gap-2">
-                <button
-                  type="button"
-                  onClick={togglePlay}
-                  disabled={!ready}
-                  aria-label={isPlaying ? "Pause video" : "Play video"}
-                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-900/70 text-white ring-1 ring-violet-400/20 backdrop-blur transition hover:bg-slate-900/90 active:scale-95 disabled:opacity-50 sm:h-8 sm:w-8"
-                >
-                  {isPlaying ? (
-                    <Pause className="h-3.5 w-3.5" strokeWidth={2} />
-                  ) : (
-                    <Play className="h-3.5 w-3.5 translate-x-[1px]" strokeWidth={2} />
-                  )}
-                </button>
-                <span className="truncate rounded-full bg-slate-900/60 px-2 py-0.5 text-[10px] tabular-nums text-violet-100/90 backdrop-blur">
-                  {formatTime(currentTime)} / {formatTime(duration)}
-                </span>
-              </div>
+              <span className="truncate rounded-full bg-slate-900/40 px-1.5 py-0.5 text-[9px] tabular-nums text-violet-100/60 backdrop-blur-sm">
+                {formatTime(currentTime)} / {formatTime(duration)}
+              </span>
 
               <button
                 type="button"
                 onClick={toggleMute}
                 disabled={!ready}
                 aria-label={isMuted ? "Unmute video" : "Mute video"}
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-900/70 text-white ring-1 ring-violet-400/20 backdrop-blur transition hover:bg-slate-900/90 active:scale-95 disabled:opacity-50 sm:h-8 sm:w-8"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-900/50 text-white/80 ring-1 ring-violet-400/20 backdrop-blur transition hover:bg-slate-900/80 hover:text-white active:scale-95 disabled:opacity-50 sm:h-10 sm:w-10"
               >
                 {isMuted ? (
-                  <VolumeX className="h-3.5 w-3.5" strokeWidth={2} />
+                  <VolumeX className="h-4 w-4 sm:h-[1.1rem] sm:w-[1.1rem]" strokeWidth={2} />
                 ) : (
-                  <Volume2 className="h-3.5 w-3.5" strokeWidth={2} />
+                  <Volume2 className="h-4 w-4 sm:h-[1.1rem] sm:w-[1.1rem]" strokeWidth={2} />
                 )}
               </button>
             </div>
@@ -492,8 +497,7 @@ export default function HeroSection() {
           </span> */}
         </p>
 
-        {/* video centerpiece — real Vimeo player with controls, ported over
-            and recolored to violet to replace the previous static image */}
+        {/* video centerpiece — real Vimeo player, now autoplaying muted */}
         <div
           className={`relative mx-auto mt-6 max-w-3xl sm:mt-8 ${step(4)}`}
           style={delay(340)}
