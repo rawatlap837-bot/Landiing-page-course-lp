@@ -46,11 +46,11 @@ import NeerajImg from "../assets/Neeraj.webp";
  * autoplays muted on mount. Tap/click anywhere on the frame toggles
  * play/pause (this is the only way to play/pause — the dedicated
  * play/pause button was removed from the control row). There's a
- * click-or-drag progress bar that dims down while the video is playing
- * (so it doesn't compete with the content) and returns to full opacity
- * on hover/scrub or once paused, a mute button (enlarged, since it's now
- * the only button in the control row), and a replay screen once the
- * video ends.
+ * click-or-drag progress bar that hides completely (and stops
+ * intercepting clicks) while the video is playing, and reappears the
+ * moment it's paused, scrubbed, or hovered — a mute button (enlarged,
+ * since it's now the only button in the control row), and a replay
+ * screen once the video ends.
  *
  * Batch info: the "fresh batch starts" message is a larger standalone
  * banner right under the main video (same spot the two-column batch-info
@@ -126,14 +126,14 @@ function HeroVideo() {
       const player = new window.Vimeo.Player(iframeRef.current);
       playerRef.current = player;
 
-      player.setVolume(0).catch(() => {});
+      player.setVolume(0).catch(() => { });
 
       player
         .getDuration()
         .then((d) => {
           if (!cancelled) setDuration(d);
         })
-        .catch(() => {});
+        .catch(() => { });
 
       player.on("play", () => {
         setIsPlaying(true);
@@ -157,7 +157,7 @@ function HeroVideo() {
       // Autoplay muted on mount (browsers allow muted autoplay). The
       // iframe src also carries autoplay=1 as a fallback for when the
       // Vimeo API script loads slightly late.
-      player.play().catch(() => {});
+      player.play().catch(() => { });
     }
 
     if (window.Vimeo && window.Vimeo.Player) {
@@ -180,7 +180,7 @@ function HeroVideo() {
     return () => {
       cancelled = true;
       if (playerRef.current) {
-        playerRef.current.unload().catch(() => {});
+        playerRef.current.unload().catch(() => { });
       }
       if (feedbackTimeoutRef.current) {
         clearTimeout(feedbackTimeoutRef.current);
@@ -209,7 +209,7 @@ function HeroVideo() {
   const toggleMute = () => {
     if (!playerRef.current) return;
     const nextMuted = !isMuted;
-    playerRef.current.setVolume(nextMuted ? 0 : 1).catch(() => {});
+    playerRef.current.setVolume(nextMuted ? 0 : 1).catch(() => { });
     setIsMuted(nextMuted);
   };
 
@@ -242,7 +242,7 @@ function HeroVideo() {
       const time = getTimeFromClientX(clientX);
       setCurrentTime(time);
       if (playerRef.current) {
-        playerRef.current.setCurrentTime(time).catch(() => {});
+        playerRef.current.setCurrentTime(time).catch(() => { });
       }
     },
     [getTimeFromClientX]
@@ -358,8 +358,9 @@ function HeroVideo() {
 
             {/* Progress bar — click or drag to seek. Sits above the
                 tap-to-toggle layer (z-20 vs z-10) so scrubbing never also
-                toggles play/pause. Dims while playing and unhovered, and
-                comes back to full opacity on hover/scrub or while paused. */}
+                toggles play/pause. Fully hidden (and non-interactive) while
+                playing, and comes back while paused, scrubbing, or
+                hovered/touched. */}
             <div
               ref={progressBarRef}
               onPointerDown={handleProgressPointerDown}
@@ -370,9 +371,10 @@ function HeroVideo() {
               aria-valuemin={0}
               aria-valuemax={Math.floor(duration) || 0}
               aria-valuenow={Math.floor(currentTime)}
-              className={`absolute inset-x-0 bottom-9 z-20 flex h-5 cursor-pointer touch-none items-center px-3 transition-opacity duration-300 sm:bottom-11 sm:px-4 ${
-                progressBarVisible ? "opacity-100" : "opacity-40"
-              }`}
+              className={`absolute inset-x-0 bottom-8 z-20 flex h-6 cursor-pointer touch-none items-center px-3 transition-opacity duration-300 sm:bottom-14 sm:h-5 sm:px-4 ${progressBarVisible
+                ? "opacity-100 pointer-events-auto"
+                : "pointer-events-none opacity-0"
+                }`}
             >
               <div className="relative h-1.5 w-full rounded-full bg-white/25 sm:h-2">
                 <div
@@ -390,7 +392,7 @@ function HeroVideo() {
             {/* Control row — play/pause is handled by tapping the video
                 itself, so the only button here is mute (enlarged since
                 it's now the sole control), alongside the time readout. */}
-            <div className="absolute inset-x-0 bottom-0 z-20 flex items-center justify-between gap-2 px-3 py-2 sm:px-3.5 sm:py-2.5">
+            <div className="absolute inset-x-0 bottom-0 z-20 flex items-center justify-between gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2.5">
               <span className="truncate rounded-full bg-slate-900/40 px-1.5 py-0.5 text-[9px] tabular-nums text-violet-100/60 backdrop-blur-sm">
                 {formatTime(currentTime)} / {formatTime(duration)}
               </span>
@@ -400,12 +402,12 @@ function HeroVideo() {
                 onClick={toggleMute}
                 disabled={!ready}
                 aria-label={isMuted ? "Unmute video" : "Mute video"}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-900/50 text-white/80 ring-1 ring-violet-400/20 backdrop-blur transition hover:bg-slate-900/80 hover:text-white active:scale-95 disabled:opacity-50 sm:h-10 sm:w-10"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-900/50 text-white/80 ring-1 ring-violet-400/20 backdrop-blur transition hover:bg-slate-900/80 hover:text-white active:scale-95 disabled:opacity-50 sm:h-10 sm:w-10"
               >
                 {isMuted ? (
-                  <VolumeX className="h-4 w-4 sm:h-[1.1rem] sm:w-[1.1rem]" strokeWidth={2} />
+                  <VolumeX className="h-3.5 w-3.5 sm:h-[1.1rem] sm:w-[1.1rem]" strokeWidth={2} />
                 ) : (
-                  <Volume2 className="h-4 w-4 sm:h-[1.1rem] sm:w-[1.1rem]" strokeWidth={2} />
+                  <Volume2 className="h-3.5 w-3.5 sm:h-[1.1rem] sm:w-[1.1rem]" strokeWidth={2} />
                 )}
               </button>
             </div>

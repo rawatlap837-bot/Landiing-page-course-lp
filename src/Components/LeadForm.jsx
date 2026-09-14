@@ -9,7 +9,7 @@ const REDIRECT_URL = "https://thankyou.sohilalvi.in/"
 // The business WhatsApp number that should receive each lead, in full
 // international format with no "+", spaces, or leading zeros
 // (e.g. country code 91 + 10-digit number for India).
-const WHATSAPP_NUMBER = "919899669649" // +91 98996 69649
+const WHATSAPP_NUMBER = "919910232927" // +91 98996 69649
 
 // Builds a wa.me link pre-filled with the lead's details. There's no API
 // key or backend involved — wa.me just opens WhatsApp (web or app) with
