@@ -1,12 +1,14 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
+// useRef / useCallback were only needed by the custom video player below.
+// import { useEffect, useRef, useState, useCallback } from "react";
 import {
   ArrowRight,
   MessageCircle,
-  Play,
-  Pause,
-  Volume2,
-  VolumeX,
-  RotateCcw,
+  // Play,      // custom player only
+  // Pause,     // custom player only
+  // Volume2,   // custom player only
+  // VolumeX,   // custom player only
+  // RotateCcw, // custom player only
   Star,
   Calendar,
   Clock,
@@ -42,15 +44,11 @@ import NeerajImg from "../assets/Neeraj.webp";
  * sm: upward — set via a responsive bg-[length] utility rather than a
  * fixed inline size, so it can vary per breakpoint.
  *
- * Video: the centerpiece is a real embedded Vimeo player. It now
- * autoplays muted on mount. Tap/click anywhere on the frame toggles
- * play/pause (this is the only way to play/pause — the dedicated
- * play/pause button was removed from the control row). There's a
- * click-or-drag progress bar that hides completely (and stops
- * intercepting clicks) while the video is playing, and reappears the
- * moment it's paused, scrubbed, or hovered — a mute button (enlarged,
- * since it's now the only button in the control row), and a replay
- * screen once the video ends.
+ * Video: now a plain Vimeo embed using Vimeo's own native controls.
+ * All of the custom player behaviour (autoplay-muted on mount,
+ * tap-to-toggle play/pause, draggable progress bar, custom mute button,
+ * replay screen, Vimeo Player API wiring) is commented out below and kept
+ * for reference in case you want it back.
  *
  * Batch info: the "fresh batch starts" message is a larger standalone
  * banner right under the main video (same spot the two-column batch-info
@@ -87,336 +85,360 @@ function useEntrance() {
   return { step, delay };
 }
 
-function formatTime(seconds = 0) {
-  if (!Number.isFinite(seconds)) return "0:00";
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60);
-  return `${m}:${String(s).padStart(2, "0")}`;
-}
+// Only used by the custom control row's time readout — kept commented.
+// function formatTime(seconds = 0) {
+//   if (!Number.isFinite(seconds)) return "0:00";
+//   const m = Math.floor(seconds / 60);
+//   const s = Math.floor(seconds % 60);
+//   return `${m}:${String(s).padStart(2, "0")}`;
+// }
 
 /**
- * Embedded Vimeo player with tap-to-toggle, a draggable progress bar, a
- * mute control, and a replay screen — recolored to this page's violet
- * accent. Autoplays muted on mount; the only way to play/pause is by
- * tapping/clicking anywhere on the video frame.
+ * Plain embedded Vimeo player with Vimeo's native controls.
+ * No autoplay, no custom overlay controls — the user presses play.
  */
 function HeroVideo() {
-  const iframeRef = useRef(null);
-  const playerRef = useRef(null);
-  const progressBarRef = useRef(null);
-  const feedbackTimeoutRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
-  const [ready, setReady] = useState(false);
-  const [ended, setEnded] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [isScrubbing, setIsScrubbing] = useState(false);
-  // Whether the progress bar is currently being hovered/touched — keeps it
-  // at full opacity even while playing so it stays usable.
-  const [isProgressHovered, setIsProgressHovered] = useState(false);
-  // Which icon (play/pause) to briefly flash in the center after a tap-to-toggle
-  const [feedbackIcon, setFeedbackIcon] = useState(null);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    function initPlayer() {
-      if (cancelled || !iframeRef.current || !window.Vimeo) return;
-      const player = new window.Vimeo.Player(iframeRef.current);
-      playerRef.current = player;
-
-      player.setVolume(0).catch(() => { });
-
-      player
-        .getDuration()
-        .then((d) => {
-          if (!cancelled) setDuration(d);
-        })
-        .catch(() => { });
-
-      player.on("play", () => {
-        setIsPlaying(true);
-        setEnded(false);
-      });
-      player.on("pause", () => setIsPlaying(false));
-      player.on("ended", () => {
-        setIsPlaying(false);
-        setEnded(true);
-      });
-      player.on("timeupdate", (data) => {
-        // Skip updates while the user is actively dragging the scrubber
-        if (!isScrubbing) {
-          setCurrentTime(data.seconds);
-          if (data.duration) setDuration(data.duration);
-        }
-      });
-
-      setReady(true);
-
-      // Autoplay muted on mount (browsers allow muted autoplay). The
-      // iframe src also carries autoplay=1 as a fallback for when the
-      // Vimeo API script loads slightly late.
-      player.play().catch(() => { });
-    }
-
-    if (window.Vimeo && window.Vimeo.Player) {
-      initPlayer();
-    } else {
-      const existing = document.querySelector(
-        'script[src="https://player.vimeo.com/api/player.js"]'
-      );
-      if (existing) {
-        existing.addEventListener("load", initPlayer);
-      } else {
-        const script = document.createElement("script");
-        script.src = "https://player.vimeo.com/api/player.js";
-        script.async = true;
-        script.addEventListener("load", initPlayer);
-        document.body.appendChild(script);
-      }
-    }
-
-    return () => {
-      cancelled = true;
-      if (playerRef.current) {
-        playerRef.current.unload().catch(() => { });
-      }
-      if (feedbackTimeoutRef.current) {
-        clearTimeout(feedbackTimeoutRef.current);
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const flashFeedbackIcon = (icon) => {
-    setFeedbackIcon(icon);
-    if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
-    feedbackTimeoutRef.current = setTimeout(() => setFeedbackIcon(null), 500);
-  };
-
-  const togglePlay = () => {
-    if (!playerRef.current) return;
-    if (isPlaying) {
-      playerRef.current.pause();
-      flashFeedbackIcon("pause");
-    } else {
-      playerRef.current.play();
-      flashFeedbackIcon("play");
-    }
-  };
-
-  const toggleMute = () => {
-    if (!playerRef.current) return;
-    const nextMuted = !isMuted;
-    playerRef.current.setVolume(nextMuted ? 0 : 1).catch(() => { });
-    setIsMuted(nextMuted);
-  };
-
-  const replay = async () => {
-    if (!playerRef.current) return;
-    try {
-      await playerRef.current.setCurrentTime(0);
-      await playerRef.current.setVolume(isMuted ? 0 : 1);
-      await playerRef.current.play();
-      setEnded(false);
-    } catch (e) {
-      setEnded(false);
-    }
-  };
-
-  // Convert a pointer x-position on the progress bar into a seek time
-  const getTimeFromClientX = useCallback(
-    (clientX) => {
-      const bar = progressBarRef.current;
-      if (!bar || !duration) return 0;
-      const rect = bar.getBoundingClientRect();
-      const ratio = Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1);
-      return ratio * duration;
-    },
-    [duration]
-  );
-
-  const seekToClientX = useCallback(
-    (clientX) => {
-      const time = getTimeFromClientX(clientX);
-      setCurrentTime(time);
-      if (playerRef.current) {
-        playerRef.current.setCurrentTime(time).catch(() => { });
-      }
-    },
-    [getTimeFromClientX]
-  );
-
-  const handleProgressPointerDown = (e) => {
-    if (!ready || !duration) return;
-    e.stopPropagation();
-    setIsScrubbing(true);
-    setIsProgressHovered(true);
-    seekToClientX(e.clientX);
-
-    const handleMove = (moveEvent) => {
-      seekToClientX(moveEvent.clientX);
-    };
-    const handleUp = (upEvent) => {
-      seekToClientX(upEvent.clientX);
-      setIsScrubbing(false);
-      setIsProgressHovered(false);
-      window.removeEventListener("pointermove", handleMove);
-      window.removeEventListener("pointerup", handleUp);
-    };
-    window.addEventListener("pointermove", handleMove);
-    window.addEventListener("pointerup", handleUp);
-  };
-
-  const progressPercent = duration ? Math.min((currentTime / duration) * 100, 100) : 0;
-  // Dim the progress bar a touch while playing so it doesn't compete with
-  // the video; bring it back to full strength on hover/scrub or once paused.
-  const progressBarVisible = !isPlaying || isScrubbing || isProgressHovered;
-
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-violet-400/20 bg-slate-950 shadow-xl shadow-violet-950/60 transition-shadow duration-500 hover:shadow-2xl hover:shadow-violet-900/70 sm:rounded-3xl sm:shadow-2xl">
       <div className="relative aspect-video w-full">
         <iframe
-          ref={iframeRef}
-          src="https://player.vimeo.com/video/1226211600?controls=0&muted=1&autoplay=1&autopause=0"
+          src="https://player.vimeo.com/video/1226211600"
           className="absolute inset-0 h-full w-full"
           style={{ border: 0 }}
           title="Watch the message"
-          allow="autoplay; fullscreen"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowFullScreen
         />
-
-        {/* Tap/click anywhere on the video to play or pause. Sits above the
-            iframe (which would otherwise swallow the click, since it's a
-            separate document) but below the progress bar / control row, so
-            those stay independently clickable via stacking order. */}
-        {!ended && (
-          <button
-            type="button"
-            onClick={togglePlay}
-            disabled={!ready}
-            aria-label={isPlaying ? "Pause video" : "Play video"}
-            className="absolute inset-0 z-10 cursor-pointer disabled:cursor-default"
-          />
-        )}
-
-        {/* Center play/pause icon — flashes briefly on toggle for feedback. */}
-        {feedbackIcon && (
-          <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
-            <style>{`
-              @keyframes heroVideoIconFlash {
-                0% { opacity: 0; transform: scale(0.85); }
-                15% { opacity: 1; transform: scale(1); }
-                75% { opacity: 1; transform: scale(1); }
-                100% { opacity: 0; transform: scale(1.05); }
-              }
-            `}</style>
-            <span
-              className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-900/80 text-white ring-1 ring-violet-400/30 backdrop-blur"
-              style={{ animation: "heroVideoIconFlash 500ms ease-out" }}
-            >
-              {feedbackIcon === "play" ? (
-                <Play className="h-6 w-6 translate-x-[1px]" strokeWidth={2} />
-              ) : (
-                <Pause className="h-6 w-6" strokeWidth={2} />
-              )}
-            </span>
-          </div>
-        )}
-
-        {ended && (
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-slate-950">
-            <button
-              type="button"
-              onClick={replay}
-              aria-label="Replay video"
-              className="flex h-16 w-16 items-center justify-center rounded-full bg-violet-500 text-white shadow-[0_10px_30px_-8px_rgba(139,92,246,0.6)] transition hover:scale-105"
-            >
-              <RotateCcw className="h-6 w-6" strokeWidth={2} />
-            </button>
-            <span className="text-sm font-medium text-violet-200/90">Watch again</span>
-
-            <button
-              type="button"
-              onClick={toggleMute}
-              aria-label={isMuted ? "Unmute video" : "Mute video"}
-              className="absolute bottom-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-slate-900/70 text-white ring-1 ring-violet-400/20 backdrop-blur transition hover:bg-slate-900/90"
-            >
-              {isMuted ? (
-                <VolumeX className="h-6 w-6" strokeWidth={2} />
-              ) : (
-                <Volume2 className="h-6 w-6" strokeWidth={2} />
-              )}
-            </button>
-          </div>
-        )}
-
-        {!ended && (
-          <>
-            {/* Bottom gradient so controls stay legible over any frame */}
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/70 to-transparent" />
-
-            {/* Progress bar — click or drag to seek. Sits above the
-                tap-to-toggle layer (z-20 vs z-10) so scrubbing never also
-                toggles play/pause. Fully hidden (and non-interactive) while
-                playing, and comes back while paused, scrubbing, or
-                hovered/touched. */}
-            <div
-              ref={progressBarRef}
-              onPointerDown={handleProgressPointerDown}
-              onPointerEnter={() => setIsProgressHovered(true)}
-              onPointerLeave={() => setIsProgressHovered(false)}
-              role="slider"
-              aria-label="Video progress"
-              aria-valuemin={0}
-              aria-valuemax={Math.floor(duration) || 0}
-              aria-valuenow={Math.floor(currentTime)}
-              className={`absolute inset-x-0 bottom-8 z-20 flex h-6 cursor-pointer touch-none items-center px-3 transition-opacity duration-300 sm:bottom-14 sm:h-5 sm:px-4 ${progressBarVisible
-                ? "opacity-100 pointer-events-auto"
-                : "pointer-events-none opacity-0"
-                }`}
-            >
-              <div className="relative h-1.5 w-full rounded-full bg-white/25 sm:h-2">
-                <div
-                  className="absolute inset-y-0 left-0 rounded-full bg-violet-400"
-                  style={{ width: `${progressPercent}%` }}
-                />
-                {/* draggable knob — always visible, bigger hit target on mobile */}
-                <div
-                  className="absolute top-1/2 h-3.5 w-3.5 -translate-y-1/2 -translate-x-1/2 rounded-full border-2 border-white bg-violet-400 shadow sm:h-4 sm:w-4"
-                  style={{ left: `${progressPercent}%` }}
-                />
-              </div>
-            </div>
-
-            {/* Control row — play/pause is handled by tapping the video
-                itself, so the only button here is mute (enlarged since
-                it's now the sole control), alongside the time readout. */}
-            <div className="absolute inset-x-0 bottom-0 z-20 flex items-center justify-between gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2.5">
-              <span className="truncate rounded-full bg-slate-900/40 px-1.5 py-0.5 text-[9px] tabular-nums text-violet-100/60 backdrop-blur-sm">
-                {formatTime(currentTime)} / {formatTime(duration)}
-              </span>
-
-              <button
-                type="button"
-                onClick={toggleMute}
-                disabled={!ready}
-                aria-label={isMuted ? "Unmute video" : "Mute video"}
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-900/50 text-white/80 ring-1 ring-violet-400/20 backdrop-blur transition hover:bg-slate-900/80 hover:text-white active:scale-95 disabled:opacity-50 sm:h-10 sm:w-10"
-              >
-                {isMuted ? (
-                  <VolumeX className="h-3.5 w-3.5 sm:h-[1.1rem] sm:w-[1.1rem]" strokeWidth={2} />
-                ) : (
-                  <Volume2 className="h-3.5 w-3.5 sm:h-[1.1rem] sm:w-[1.1rem]" strokeWidth={2} />
-                )}
-              </button>
-            </div>
-          </>
-        )}
       </div>
     </div>
   );
 }
+
+/* ---------------------------------------------------------------------------
+   OLD CUSTOM VIDEO PLAYER — commented out, kept for reference.
+   Restore by uncommenting this function (and the imports/helpers above),
+   then deleting the plain HeroVideo defined above.
+--------------------------------------------------------------------------- */
+
+// function HeroVideo() {
+//   const iframeRef = useRef(null);
+//   const playerRef = useRef(null);
+//   const progressBarRef = useRef(null);
+//   const feedbackTimeoutRef = useRef(null);
+//   const [isPlaying, setIsPlaying] = useState(false);
+//   const [isMuted, setIsMuted] = useState(true);
+//   const [ready, setReady] = useState(false);
+//   const [ended, setEnded] = useState(false);
+//   const [currentTime, setCurrentTime] = useState(0);
+//   const [duration, setDuration] = useState(0);
+//   const [isScrubbing, setIsScrubbing] = useState(false);
+//   // Whether the progress bar is currently being hovered/touched — keeps it
+//   // at full opacity even while playing so it stays usable.
+//   const [isProgressHovered, setIsProgressHovered] = useState(false);
+//   // Which icon (play/pause) to briefly flash in the center after a tap-to-toggle
+//   const [feedbackIcon, setFeedbackIcon] = useState(null);
+//
+//   useEffect(() => {
+//     let cancelled = false;
+//
+//     function initPlayer() {
+//       if (cancelled || !iframeRef.current || !window.Vimeo) return;
+//       const player = new window.Vimeo.Player(iframeRef.current);
+//       playerRef.current = player;
+//
+//       // Set a real baseline volume, and control audibility purely through
+//       // the muted flag (see setMuted below) rather than volume level —
+//       // volume-only muting is what caused unmute to silently fail.
+//       player.setVolume(1).catch(() => { });
+//       player.setMuted(true).catch(() => { });
+//
+//       player
+//         .getDuration()
+//         .then((d) => {
+//           if (!cancelled) setDuration(d);
+//         })
+//         .catch(() => { });
+//
+//       player.on("play", () => {
+//         setIsPlaying(true);
+//         setEnded(false);
+//       });
+//       player.on("pause", () => setIsPlaying(false));
+//       player.on("ended", () => {
+//         setIsPlaying(false);
+//         setEnded(true);
+//       });
+//       player.on("timeupdate", (data) => {
+//         // Skip updates while the user is actively dragging the scrubber
+//         if (!isScrubbing) {
+//           setCurrentTime(data.seconds);
+//           if (data.duration) setDuration(data.duration);
+//         }
+//       });
+//       // Some browsers/extensions can flip the muted state outside our own
+//       // toggleMute calls — keep React state in sync either way.
+//       player.on("volumechange", (data) => {
+//         if (typeof data.muted === "boolean") {
+//           setIsMuted(data.muted);
+//         }
+//       });
+//
+//       setReady(true);
+//
+//       // Autoplay muted on mount (browsers allow muted autoplay).
+//       player.play().catch(() => { });
+//     }
+//
+//     if (window.Vimeo && window.Vimeo.Player) {
+//       initPlayer();
+//     } else {
+//       const existing = document.querySelector(
+//         'script[src="https://player.vimeo.com/api/player.js"]'
+//       );
+//       if (existing) {
+//         existing.addEventListener("load", initPlayer);
+//       } else {
+//         const script = document.createElement("script");
+//         script.src = "https://player.vimeo.com/api/player.js";
+//         script.async = true;
+//         script.addEventListener("load", initPlayer);
+//         document.body.appendChild(script);
+//       }
+//     }
+//
+//     return () => {
+//       cancelled = true;
+//       if (playerRef.current) {
+//         playerRef.current.unload().catch(() => { });
+//       }
+//       if (feedbackTimeoutRef.current) {
+//         clearTimeout(feedbackTimeoutRef.current);
+//       }
+//     };
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, []);
+//
+//   const flashFeedbackIcon = (icon) => {
+//     setFeedbackIcon(icon);
+//     if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
+//     feedbackTimeoutRef.current = setTimeout(() => setFeedbackIcon(null), 500);
+//   };
+//
+//   const togglePlay = () => {
+//     if (!playerRef.current) return;
+//     if (isPlaying) {
+//       playerRef.current.pause();
+//       flashFeedbackIcon("pause");
+//     } else {
+//       playerRef.current.play();
+//       flashFeedbackIcon("play");
+//     }
+//   };
+//
+//   const toggleMute = () => {
+//     if (!playerRef.current) return;
+//     const nextMuted = !isMuted;
+//     // setMuted() (not setVolume()) is what actually clears Vimeo's internal
+//     // "muted" flag left over from the muted=1 autoplay param.
+//     playerRef.current
+//       .setMuted(nextMuted)
+//       .then(() => setIsMuted(nextMuted))
+//       .catch(() => { });
+//   };
+//
+//   const replay = async () => {
+//     if (!playerRef.current) return;
+//     try {
+//       await playerRef.current.setCurrentTime(0);
+//       await playerRef.current.setMuted(isMuted);
+//       await playerRef.current.play();
+//       setEnded(false);
+//     } catch (e) {
+//       setEnded(false);
+//     }
+//   };
+//
+//   // Convert a pointer x-position on the progress bar into a seek time
+//   const getTimeFromClientX = useCallback(
+//     (clientX) => {
+//       const bar = progressBarRef.current;
+//       if (!bar || !duration) return 0;
+//       const rect = bar.getBoundingClientRect();
+//       const ratio = Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1);
+//       return ratio * duration;
+//     },
+//     [duration]
+//   );
+//
+//   const seekToClientX = useCallback(
+//     (clientX) => {
+//       const time = getTimeFromClientX(clientX);
+//       setCurrentTime(time);
+//       if (playerRef.current) {
+//         playerRef.current.setCurrentTime(time).catch(() => { });
+//       }
+//     },
+//     [getTimeFromClientX]
+//   );
+//
+//   const handleProgressPointerDown = (e) => {
+//     if (!ready || !duration) return;
+//     e.stopPropagation();
+//     setIsScrubbing(true);
+//     setIsProgressHovered(true);
+//     seekToClientX(e.clientX);
+//
+//     const handleMove = (moveEvent) => {
+//       seekToClientX(moveEvent.clientX);
+//     };
+//     const handleUp = (upEvent) => {
+//       seekToClientX(upEvent.clientX);
+//       setIsScrubbing(false);
+//       setIsProgressHovered(false);
+//       window.removeEventListener("pointermove", handleMove);
+//       window.removeEventListener("pointerup", handleUp);
+//     };
+//     window.addEventListener("pointermove", handleMove);
+//     window.addEventListener("pointerup", handleUp);
+//   };
+//
+//   const progressPercent = duration ? Math.min((currentTime / duration) * 100, 100) : 0;
+//   const progressBarVisible = !isPlaying || isScrubbing || isProgressHovered;
+//
+//   return (
+//     <div className="group relative overflow-hidden rounded-2xl border border-violet-400/20 bg-slate-950 shadow-xl shadow-violet-950/60 transition-shadow duration-500 hover:shadow-2xl hover:shadow-violet-900/70 sm:rounded-3xl sm:shadow-2xl">
+//       <div className="relative aspect-video w-full">
+//         <iframe
+//           ref={iframeRef}
+//           src="https://player.vimeo.com/video/1226211600?controls=0&muted=1&autoplay=1&autopause=0"
+//           className="absolute inset-0 h-full w-full"
+//           style={{ border: 0 }}
+//           title="Watch the message"
+//           allow="autoplay; fullscreen"
+//         />
+//
+//         {/* Tap/click anywhere on the video to play or pause. */}
+//         {!ended && (
+//           <button
+//             type="button"
+//             onClick={togglePlay}
+//             disabled={!ready}
+//             aria-label={isPlaying ? "Pause video" : "Play video"}
+//             className="absolute inset-0 z-10 cursor-pointer disabled:cursor-default"
+//           />
+//         )}
+//
+//         {/* Center play/pause icon — flashes briefly on toggle for feedback. */}
+//         {feedbackIcon && (
+//           <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+//             <style>{`
+//               @keyframes heroVideoIconFlash {
+//                 0% { opacity: 0; transform: scale(0.85); }
+//                 15% { opacity: 1; transform: scale(1); }
+//                 75% { opacity: 1; transform: scale(1); }
+//                 100% { opacity: 0; transform: scale(1.05); }
+//               }
+//             `}</style>
+//             <span
+//               className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-900/80 text-white ring-1 ring-violet-400/30 backdrop-blur"
+//               style={{ animation: "heroVideoIconFlash 500ms ease-out" }}
+//             >
+//               {feedbackIcon === "play" ? (
+//                 <Play className="h-6 w-6 translate-x-[1px]" strokeWidth={2} />
+//               ) : (
+//                 <Pause className="h-6 w-6" strokeWidth={2} />
+//               )}
+//             </span>
+//           </div>
+//         )}
+//
+//         {ended && (
+//           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-slate-950">
+//             <button
+//               type="button"
+//               onClick={replay}
+//               aria-label="Replay video"
+//               className="flex h-16 w-16 items-center justify-center rounded-full bg-violet-500 text-white shadow-[0_10px_30px_-8px_rgba(139,92,246,0.6)] transition hover:scale-105"
+//             >
+//               <RotateCcw className="h-6 w-6" strokeWidth={2} />
+//             </button>
+//             <span className="text-sm font-medium text-violet-200/90">Watch again</span>
+//
+//             <button
+//               type="button"
+//               onClick={toggleMute}
+//               aria-label={isMuted ? "Unmute video" : "Mute video"}
+//               className="absolute bottom-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-slate-900/70 text-white ring-1 ring-violet-400/20 backdrop-blur transition hover:bg-slate-900/90"
+//             >
+//               {isMuted ? (
+//                 <VolumeX className="h-6 w-6" strokeWidth={2} />
+//               ) : (
+//                 <Volume2 className="h-6 w-6" strokeWidth={2} />
+//               )}
+//             </button>
+//           </div>
+//         )}
+//
+//         {!ended && (
+//           <>
+//             {/* Bottom gradient so controls stay legible over any frame */}
+//             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/70 to-transparent" />
+//
+//             {/* Progress bar — click or drag to seek. */}
+//             <div
+//               ref={progressBarRef}
+//               onPointerDown={handleProgressPointerDown}
+//               onPointerEnter={() => setIsProgressHovered(true)}
+//               onPointerLeave={() => setIsProgressHovered(false)}
+//               role="slider"
+//               aria-label="Video progress"
+//               aria-valuemin={0}
+//               aria-valuemax={Math.floor(duration) || 0}
+//               aria-valuenow={Math.floor(currentTime)}
+//               className={`absolute inset-x-0 bottom-8 z-20 flex h-6 cursor-pointer touch-none items-center px-3 transition-opacity duration-300 sm:bottom-14 sm:h-5 sm:px-4 ${progressBarVisible
+//                 ? "opacity-100 pointer-events-auto"
+//                 : "pointer-events-none opacity-0"
+//                 }`}
+//             >
+//               <div className="relative h-1.5 w-full rounded-full bg-white/25 sm:h-2">
+//                 <div
+//                   className="absolute inset-y-0 left-0 rounded-full bg-violet-400"
+//                   style={{ width: `${progressPercent}%` }}
+//                 />
+//                 {/* draggable knob */}
+//                 <div
+//                   className="absolute top-1/2 h-3.5 w-3.5 -translate-y-1/2 -translate-x-1/2 rounded-full border-2 border-white bg-violet-400 shadow sm:h-4 sm:w-4"
+//                   style={{ left: `${progressPercent}%` }}
+//                 />
+//               </div>
+//             </div>
+//
+//             {/* Control row — mute button + time readout. */}
+//             <div className="absolute inset-x-0 bottom-0 z-20 flex items-center justify-between gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2.5">
+//               <span className="truncate rounded-full bg-slate-900/40 px-1.5 py-0.5 text-[9px] tabular-nums text-violet-100/60 backdrop-blur-sm">
+//                 {formatTime(currentTime)} / {formatTime(duration)}
+//               </span>
+//
+//               <button
+//                 type="button"
+//                 onClick={toggleMute}
+//                 disabled={!ready}
+//                 aria-label={isMuted ? "Unmute video" : "Mute video"}
+//                 className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-900/50 text-white/80 ring-1 ring-violet-400/20 backdrop-blur transition hover:bg-slate-900/80 hover:text-white active:scale-95 disabled:opacity-50 sm:h-10 sm:w-10"
+//               >
+//                 {isMuted ? (
+//                   <VolumeX className="h-3.5 w-3.5 sm:h-[1.1rem] sm:w-[1.1rem]" strokeWidth={2} />
+//                 ) : (
+//                   <Volume2 className="h-3.5 w-3.5 sm:h-[1.1rem] sm:w-[1.1rem]" strokeWidth={2} />
+//                 )}
+//               </button>
+//             </div>
+//           </>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
 
 export default function HeroSection() {
   const { step, delay } = useEntrance();
@@ -499,7 +521,7 @@ export default function HeroSection() {
           </span> */}
         </p>
 
-        {/* video centerpiece — real Vimeo player, now autoplaying muted */}
+        {/* video centerpiece — plain Vimeo embed with native controls */}
         <div
           className={`relative mx-auto mt-6 max-w-3xl sm:mt-8 ${step(4)}`}
           style={delay(340)}
