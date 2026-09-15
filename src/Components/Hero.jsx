@@ -44,11 +44,12 @@ import NeerajImg from "../assets/Neeraj.webp";
  * sm: upward — set via a responsive bg-[length] utility rather than a
  * fixed inline size, so it can vary per breakpoint.
  *
- * Video: now a plain Vimeo embed using Vimeo's own native controls.
- * All of the custom player behaviour (autoplay-muted on mount,
- * tap-to-toggle play/pause, draggable progress bar, custom mute button,
- * replay screen, Vimeo Player API wiring) is commented out below and kept
- * for reference in case you want it back.
+ * Video: a plain Vimeo embed ("final 10", id 1226845834) using Vimeo's own
+ * native controls, set to autoplay muted via URL params (autoplay=1&muted=1)
+ * — required together, since browsers block unmuted autoplay. All of the
+ * custom player behaviour (tap-to-toggle play/pause, draggable progress
+ * bar, custom mute button, replay screen, Vimeo Player API wiring) is
+ * commented out below and kept for reference in case you want it back.
  *
  * Batch info: the "fresh batch starts" message is a larger standalone
  * banner right under the main video (same spot the two-column batch-info
@@ -94,19 +95,21 @@ function useEntrance() {
 // }
 
 /**
- * Plain embedded Vimeo player with Vimeo's native controls.
- * No autoplay, no custom overlay controls — the user presses play.
+ * Plain embedded Vimeo player ("final 10") with Vimeo's native controls.
+ * Autoplays muted on load per Vimeo's embed params; the user can unmute
+ * and control playback via Vimeo's own control bar.
  */
 function HeroVideo() {
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-violet-400/20 bg-slate-950 shadow-xl shadow-violet-950/60 transition-shadow duration-500 hover:shadow-2xl hover:shadow-violet-900/70 sm:rounded-3xl sm:shadow-2xl">
       <div className="relative aspect-video w-full">
         <iframe
-          src="https://player.vimeo.com/video/1226211600"
+          src="https://player.vimeo.com/video/1226845834?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1"
           className="absolute inset-0 h-full w-full"
           style={{ border: 0 }}
-          title="Watch the message"
-          allow="autoplay; fullscreen; picture-in-picture"
+          title="final 10"
+          allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
           allowFullScreen
         />
       </div>
