@@ -511,7 +511,7 @@ export default function HeroSection() {
           )}`}
           style={delay(320)}
         >
-          {/* <span className="text-slate-200">
+          <span className="text-slate-200">
             ( Normally </span>
           <span className="text-slate-500 line-through decoration-2">
             ₹60,000
@@ -521,7 +521,7 @@ export default function HeroSection() {
             <span className="text-lg font-extrabold text-violet-400 sm:text-xl">
               ₹1,199)
             </span>
-          </span> */}
+          </span>
         </p>
 
         {/* video centerpiece — plain Vimeo embed with native controls */}
