@@ -20,6 +20,10 @@ import LeadForm from "./LeadForm";
  * <Button variant="gradient" bounce icon={ArrowRight} size="lg">Join The Program Now</Button>
  * <Button variant="gradient" pulse shine bounce icon={ArrowRight} size="lg">Join The Program Now</Button>
  *
+ * <Button variant="yellow" pulse shine icon={ArrowRight} size="lg">
+ *   Join the Free Webinar — Get a Detailed Explanation
+ * </Button>
+ *
  * <Button variant="gradient" openForm formTitle="Book Your Slot" size="lg">
  *   Book Your Slot Now
  * </Button>
@@ -27,7 +31,7 @@ import LeadForm from "./LeadForm";
  *      (imported from ./LeadForm). No href, no external navigation.
  *
  * Props:
- * - variant: "primary" | "secondary" | "outline" | "ghost" | "danger" | "gradient" | "emeraldOutline"  (default "primary")
+ * - variant: "primary" | "secondary" | "outline" | "ghost" | "danger" | "gradient" | "emeraldOutline" | "yellow"  (default "primary")
  * - size: "sm" | "md" | "lg"                                          (default "md")
  * - shape: "pill" | "rounded"                                         (default "pill")
  * - icon: a lucide-react icon component, e.g. ArrowRight
@@ -241,6 +245,9 @@ const Button = forwardRef(function Button(
             "hover:-translate-y-0.5 hover:shadow-violet-700/50",
         emeraldOutline:
             "border-2 border-emerald-500 bg-white text-emerald-600 hover:bg-emerald-50",
+        yellow:
+            "bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-900 shadow-lg shadow-amber-300/60 " +
+            "hover:-translate-y-0.5 hover:from-amber-300 hover:to-yellow-300 hover:shadow-amber-400/70",
     };
 
     const groupClass = !iconOnly && Icon && iconPosition === "right" ? "group" : "";
@@ -260,12 +267,14 @@ const Button = forwardRef(function Button(
         .filter(Boolean)
         .join(" ");
 
+    const pulseRingColor = variant === "yellow" ? "rgba(251, 191, 36, 0.5)" : "rgba(124, 58, 237, 0.45)";
+
     const pulseStyle = pulse ? (
         <style>{`
             @keyframes btnPulseRing {
-                0% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.45); }
-                70% { box-shadow: 0 0 0 14px rgba(124, 58, 237, 0); }
-                100% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0); }
+                0% { box-shadow: 0 0 0 0 ${pulseRingColor}; }
+                70% { box-shadow: 0 0 0 14px rgba(251, 191, 36, 0); }
+                100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
             }
             @media (prefers-reduced-motion: no-preference) {
                 .btn-pulse-ring { animation: btnPulseRing 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; }

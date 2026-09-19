@@ -136,18 +136,17 @@ export default function FinalCTAAndFooter() {
 
           <Reveal delay={320}>
             <Button
+              variant="yellow"
               size="lg"
-              icon={ArrowRight}
-              iconPosition="right"
               pulse
               shine
               fullWidth
               openForm
               formTitle="Book Your Slot"
               webhookUrl="https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"
-              className="mt-5 uppercase tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
+              className="uppercase mt-5 !font-bold tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
             >
-              Book Your Slot Now
+              Join the Free Webinar For Detailed Explanation
             </Button>
           </Reveal>
 

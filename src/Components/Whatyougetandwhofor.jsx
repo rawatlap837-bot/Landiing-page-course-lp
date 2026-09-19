@@ -188,18 +188,17 @@ export default function WhatYouGetAndWhoFor() {
                     {/* CTA */}
                     <div className="mt-14 flex justify-center">
                         <Button
+                            variant="yellow"
                             size="lg"
-                            icon={ArrowRight}
-                            iconPosition="right"
                             pulse
                             shine
                             fullWidth
                             openForm
                             formTitle="Book Your Slot"
                             webhookUrl="https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"
-                            className="uppercase tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
+                            className="uppercase !font-bold tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
                         >
-                            Book Your Slot Now
+                            Join the Free Webinar For Detailed Explanation
                         </Button>
                     </div>
                 </div>

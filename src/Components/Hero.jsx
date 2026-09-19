@@ -505,7 +505,7 @@ export default function HeroSection() {
           A practical, step-by-step programme to help you master landing page creation, build your portfolio, and start monetizing your skill.
         </p>
 
-        <p
+        {/* <p
           className={`mx-auto mt-3 text-center text-lg font-semibold sm:text-base ${step(
             4
           )}`}
@@ -522,7 +522,7 @@ export default function HeroSection() {
               ₹1,199)
             </span>
           </span>
-        </p>
+        </p> */}
 
         {/* video centerpiece — plain Vimeo embed with native controls */}
         <div
@@ -553,18 +553,17 @@ export default function HeroSection() {
         >
 
           <Button
+            variant="yellow"
             size="lg"
-            icon={ArrowRight}
-            iconPosition="right"
             pulse
             shine
             fullWidth
             openForm
             formTitle="Book Your Slot"
             webhookUrl="https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"
-            className="uppercase tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
+            className="uppercase !font-bold tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
           >
-            Book Your Slot Now
+            Join the Free Webinar For Detailed Explanation
           </Button>
           {/* <Button
             href="https://wa.me/919899669649?text=Wants%20to%20know%20more%20about%20this%20course"

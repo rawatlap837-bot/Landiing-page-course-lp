@@ -1,25 +1,14 @@
 import { useState } from "react"
 
 // Paste your deployed Google Apps Script "Web app URL" here (ends in /exec).
-const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwTdDImgnV8cQ2jEorbvMJmaI2Nq-874ccngJxB0IAyVisohhxfWfFxDg4tBD6a86GC/exec"
+// Used only as a fallback if no webhookUrl prop is passed in.
+const DEFAULT_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwTdDImgnV8cQ2jEorbvMJmaI2Nq-874ccngJxB0IAyVisohhxfWfFxDg4tBD6a86GC/exec"
 
-// The business WhatsApp number that should receive each lead, in full
-// international format with no "+", spaces, or leading zeros
-// (e.g. country code 91 + 10-digit number for India).
-const WHATSAPP_NUMBER = "919910232927" // +91 98996 69649
+const DEFAULT_REDIRECT_URL = "https://thankyou.sohilalvi.in/"
 
-// Builds a wa.me link pre-filled with the lead's details. There's no API
-// key or backend involved — wa.me just opens WhatsApp (web or app) with
-// the message ready to send, so the person still needs to hit send on
-// that tab themselves.
-function buildWhatsAppUrl({ name, phone, email }) {
-    const text = `Hi, I’m interested in the Landing Page Course. I’d like to know more about it.:%0A%0AName: ${name}%0APhone: ${phone}%0AEmail: ${email}`
-    return `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`
-}
-
-export default function LeadForm() {
+export default function LeadForm({ title = "Book Your Slot", webhookUrl, redirectUrl = DEFAULT_REDIRECT_URL, onSuccess }) {
     const [form, setForm] = useState({ name: "", phone: "", email: "" })
-    const [status, setStatus] = useState("idle") // idle | submitting | error | success
+    const [status, setStatus] = useState("idle") // idle | submitting | error | success | redirecting
 
     function handleChange(e) {
         setForm({ ...form, [e.target.name]: e.target.value })
@@ -42,7 +31,7 @@ export default function LeadForm() {
         try {
             // no-cors: Apps Script doesn't send back readable CORS headers, but
             // the request still goes through and the row still gets added.
-            await fetch(WEBHOOK_URL, {
+            await fetch(webhookUrl || DEFAULT_WEBHOOK_URL, {
                 method: "POST",
                 mode: "no-cors",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -54,9 +43,14 @@ export default function LeadForm() {
                 }),
             })
 
-            // Open a WhatsApp tab pre-filled with the lead details, addressed
-            // to the business number above.
-            window.open(buildWhatsAppUrl({ name, phone, email }), "_blank")
+            onSuccess?.()
+
+            if (redirectUrl) {
+                // Send the visitor to the thank-you page.
+                setStatus("redirecting")
+                window.location.href = redirectUrl
+                return
+            }
 
             setStatus("success")
         } catch (err) {
@@ -70,7 +64,7 @@ export default function LeadForm() {
             <div className="mx-auto flex max-w-md flex-col items-center gap-2 rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
                 <h3 className="text-xl font-bold text-slate-900">Thanks, {form.name.split(" ")[0]}!</h3>
                 <p className="text-sm text-slate-500">
-                    We've got your details and opened WhatsApp so you can send us a message directly. We'll reach out shortly to confirm your slot.
+                    We've got your details and will reach out shortly to confirm your slot.
                 </p>
             </div>
         )
@@ -82,7 +76,7 @@ export default function LeadForm() {
             className="mx-auto flex max-w-md flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8"
         >
             <div className="text-center">
-                <h3 className="text-xl font-bold text-slate-900">Book Your Slot</h3>
+                <h3 className="text-xl font-bold text-slate-900">{title}</h3>
                 <p className="mt-1 text-sm text-slate-500">
                     Fill in your details and we'll reach out to confirm.
                 </p>
@@ -132,10 +126,14 @@ export default function LeadForm() {
 
             <button
                 type="submit"
-                disabled={status === "submitting"}
+                disabled={status === "submitting" || status === "redirecting"}
                 className="mt-2 rounded-full bg-violet-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-70"
             >
-                {status === "submitting" ? "Booking..." : "Book Your Slot Now"}
+                {status === "submitting"
+                    ? "Booking..."
+                    : status === "redirecting"
+                        ? "Redirecting..."
+                        : "Book Your Slot Now"}
             </button>
         </form>
     )
