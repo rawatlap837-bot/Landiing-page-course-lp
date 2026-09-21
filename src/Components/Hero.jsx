@@ -561,9 +561,11 @@ export default function HeroSection() {
             openForm
             formTitle="Book Your Slot"
             webhookUrl="https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"
-            className="uppercase !font-bold tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
+            className="capitalize !font-bold tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
           >
-            Join the Free Webinar For Detailed Explanation
+            <span className="!text-xl md:!text-2xl">Join the Free Webinar</span>
+            <br />
+            <span className="!text-sm  !font-bold md:!text-base font-normal opacity-90">For Detailed Explanation</span>
           </Button>
           {/* <Button
             href="https://wa.me/919899669649?text=Wants%20to%20know%20more%20about%20this%20course"
