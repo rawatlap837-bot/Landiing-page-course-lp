@@ -136,18 +136,21 @@ export default function FinalCTAAndFooter() {
 
           <Reveal delay={320}>
             <Button
-              variant="yellow"
-              size="lg"
-              pulse
-              shine
-              fullWidth
-              openForm
-              formTitle="Book Your Slot"
-              webhookUrl="https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"
-              className="uppercase mt-5 !font-bold tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto"
-            >
-              Join the Free Webinar For Detailed Explanation
-            </Button>
+            variant="yellow"
+            size="lg"
+            pulse
+            shine
+            fullWidth
+            openForm
+            formTitle="Book Your Slot"
+            webhookUrl="https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"
+            className="capitalize !font-bold tracking-wide transition-transform duration-300 sm:w-auto !px-4 md:!px-8 !py-2 md:!py-3 !leading-tight"
+          >
+            <span className="!text-[22px] md:!text-2xl block">Join the Free Webinar</span>
+            <span className="!text-[15px] md:!text-sm !font-semibold opacity-90 block -mt-0.5">
+              For Detailed Explanation
+            </span>
+          </Button>
           </Reveal>
 
           <Reveal delay={420}>
