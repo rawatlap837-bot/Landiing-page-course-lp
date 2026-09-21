@@ -1,4 +1,5 @@
 import { CheckCircle2 } from "lucide-react";
+import Learn from "../assets/Learn.png";
 
 const points = [
   "High quality video lessons",
@@ -23,18 +24,12 @@ export default function LearnSmarter() {
               </li>
             ))}
           </ul>
-          <a
-            href="https://rzp.io/rzp/AD2PP0lT"
-            className="mt-8 inline-block rounded-full bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-500"
-          >
-            Start learning today
-          </a>
         </div>
 
         <div className="relative">
           <div className="overflow-hidden rounded-2xl border border-white/10 bg-slate-800 shadow-2xl">
             <img
-              src="https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?q=80&w=800&auto=format&fit=crop"
+              src={Learn}
               alt="Student learning online on a laptop"
               className="h-64 w-full object-cover sm:h-80"
             />
