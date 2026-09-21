@@ -75,7 +75,7 @@ export default function WhyLandingPages() {
             }`}
         >
           <span className="inline-block rounded-full bg-violet-100 px-4 py-1.5 text-xs font-semibold text-violet-700">
-            Why Landing Pages?
+            Why Funnel Builder?
           </span>
 
           <h2 className="mt-5 text-[2rem] font-extrabold leading-[1.15] tracking-tight text-slate-900 xs:text-3xl sm:text-4xl md:text-5xl">

@@ -502,7 +502,7 @@ export default function HeroSection() {
           )}`}
           style={delay(240)}
         >
-          A practical, step-by-step programme to help you master landing page creation, build your portfolio, and start monetizing your skill.
+          A practical, step-by-step programme to help you master funnel creation, build your portfolio, and start monetizing your skill.
         </p>
 
         {/* <p
@@ -563,7 +563,7 @@ export default function HeroSection() {
             webhookUrl="https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"
             className="capitalize !font-bold tracking-wide transition-transform duration-300 hover:-translate-y-0.5 sm:w-auto  md:!px-8 !px-1"
           >
-            <span className="!text-[25px] md:!text-2xl">Join the Free Webinar</span>
+            <span className="!text-[22px] md:!text-2xl">Join the Free Webinar</span>
             <br />
             <span className="!text-[15px] !font-bold md:!text-base font-normal opacity-90">For Detailed Explanation</span>
           </Button>
