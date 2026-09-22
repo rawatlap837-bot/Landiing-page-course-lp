@@ -53,8 +53,9 @@ import NeerajImg from "../assets/Neeraj.webp";
  *
  * Batch info: the "fresh batch starts" message is a larger standalone
  * banner right under the main video (same spot the two-column batch-info
- * row used to occupy). The "enrollment closes in" message now sits below
- * the social-proof card instead, as its own smaller pill.
+ * row used to occupy). The "enrollment closes in" message sits below that,
+ * as its own pill, followed by a small stacked Saturday / 6:30 PM line
+ * giving the exact day and time of the deadline.
  */
 
 const GRID_TEXTURE_STYLE = {
@@ -544,6 +545,30 @@ export default function HeroSection() {
           </span>
         </div>
 
+        {/* date & time of the closing deadline — bordered, professional card
+            with a divider between the day and the time */}
+        <div
+          className={`mx-auto mt-3 flex w-fit items-stretch divide-x divide-violet-400/20 overflow-hidden rounded-xl border border-violet-400/25 bg-slate-900/60 shadow-sm shadow-violet-950/30 backdrop-blur-sm ${step(
+            7
+          )}`}
+          style={delay(660)}
+        >
+          <div className="flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5">
+            <Calendar className="h-4 w-4 shrink-0 text-violet-300" />
+            <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+              Date
+            </span>
+            <span className="text-sm font-bold text-white">Saturday</span>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5">
+            <Clock className="h-4 w-4 shrink-0 text-violet-300" />
+            <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+              Time
+            </span>
+            <span className="text-sm font-bold text-white">6:30 PM</span>
+          </div>
+        </div>
+
         {/* CTAs */}
         <div
           className={`mt-6 flex flex-col items-center justify-center gap-3 px-2 sm:mt-8 sm:flex-row sm:px-0 ${step(
@@ -560,7 +585,7 @@ export default function HeroSection() {
             fullWidth
             openForm
             formTitle="Book Your Slot"
-            webhookUrl="https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"
+            webhookUrl="https://script.google.com/macros/s/AKfycbxlYwEiddb7KzcgdAOUwzUzSwTuMV1PxuOdqq_jXrYxDxWWuRYCV9FUdBP17_4kqd_8/exec"
             className="capitalize !font-bold tracking-wide transition-transform duration-300 sm:w-auto !px-4 md:!px-8 !py-2 md:!py-3 !leading-tight"
           >
             <span className="!text-[22px] md:!text-2xl block">Join the Free Webinar</span>
