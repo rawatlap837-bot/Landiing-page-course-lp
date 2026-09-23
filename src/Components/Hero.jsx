@@ -558,7 +558,7 @@ export default function HeroSection() {
             <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
               Date
             </span>
-            <span className="text-sm font-bold text-white">Saturday</span>
+            <span className="text-sm font-bold text-white">26 - Sept(Saturday)</span>
           </div>
           <div className="flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5">
             <Clock className="h-4 w-4 shrink-0 text-violet-300" />
